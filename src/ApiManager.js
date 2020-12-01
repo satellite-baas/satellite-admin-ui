@@ -52,7 +52,7 @@ const ApiManager = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <AddApiKeyButton 
         addKey={addKey}
       />

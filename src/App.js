@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
+  BrowserRouter as Router
 } from "react-router-dom";
 
 import { v4 as uuidv4 } from 'uuid';
-import SchemaExplorer from './SchemaExplorer';
-import SchemaManager from './SchemaManager.js';
-import ApiManager from './ApiManager';
-import Home from './Home';
 import Navbar from "./Navbar";
 import Header from './Header';
+import Main from './Main';
 
 import './App.css';
 import 'bulma/css/bulma.css';
@@ -37,25 +31,16 @@ const schema = "";
 
 const App = () => {
   return (
-    <div className="App">
+    <div className="App">    
       <Router>
         <Header />
-        <Navbar />
-        <div className="content">
-          <Switch>
-            <Route path="/security">
-              <ApiManager />
-            </Route>
-            <Route path="/schema">
-              <SchemaManager />
-            </Route>
-            <Route path="/explorer">
-              <SchemaExplorer />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
+        <div className="columns is-fullheight is-gapless">
+          <div className="column is-one-fifth nav-container">
+            <Navbar />
+          </div>          
+          <div className="column is-four-fifths">
+            <Main />
+          </div>          
         </div>
       </Router>
     </div>

@@ -34,7 +34,7 @@ const ApiKeyTable = ({ keys, deleteKey }) => {
 
   return (
     <div>
-      <table className="table">
+      <table className="table is-fullwidth">
         <thead>
           <tr>
             <th>Key</th>

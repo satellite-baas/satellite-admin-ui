@@ -28,9 +28,9 @@ const AddApiKeyButton = ({ addKey }) => {
   };
 
   return (
-    <div className="content">
+    <div>
       <button
-        className="button is-medium"
+        className="button"
         onClick={handleOpenModal}
       >
         New API Key
