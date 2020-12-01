@@ -6,7 +6,7 @@ const styles = {
   marginLeft: "27px",
   borderRight: "2px solid lightgray",
   height: "100vh",
-  paddingTop: "20px"
+  paddingTop: "30px"
 };
 
 const NavbarHeader = () => {

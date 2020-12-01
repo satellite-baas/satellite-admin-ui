@@ -90,11 +90,20 @@
 }
 
 .main-container {
-  background-color: white;
-  padding: 20px 20px;
+  background-color: #add8e6;
+  background-image: linear-gradient(#add8e6, white);
+  padding: 30px 100px;
+  height: 100vh;
 }
 
 .nav-container {
-  background-color: #add8e6;
-  background-image: linear-gradient(#add8e6, white);
+  background-color: white;
+}
+
+.schema-box {
+  padding: 2.2rem;
+}
+
+.cm-s-material.CodeMirror {
+  border-radius: 6px;
 }

@@ -72,24 +72,25 @@ class SchemaManager extends React.Component {
       <div 
         style={{ textAlign: 'left' }}
       >
-        <CodeMirror 
-          value={this.state.schema}
-          options={{
-            mode: 'graphql',
-            theme: 'material',
-            lineNumbers: true,
-            tabSize: 2
-          }}
-          onChange={(editor, data, value) => this.handleUpdateSchema(value)}
-        />
-        <button
-          block
-          variant="primary"
-          style={{ marginTop: '5px' }}
-          onClick={this.handleSubmitSchema}
-        >
-          Deploy
-        </button>
+        <h1 className="title is-2">Schema</h1>
+        <div className="box schema-box">
+          <CodeMirror 
+            value={this.state.schema}
+            options={{
+              mode: 'graphql',
+              theme: 'material',
+              lineNumbers: true,
+              tabSize: 2
+            }}
+            onChange={(editor, data, value) => this.handleUpdateSchema(value)}
+          />
+          <button
+            className="button is-info is-fullwidth mt-2"
+            onClick={this.handleSubmitSchema}
+          >
+            Deploy
+          </button>
+        </div>
       </div>
     );
   }
