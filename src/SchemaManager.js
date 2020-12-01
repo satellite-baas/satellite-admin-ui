@@ -62,7 +62,6 @@ class SchemaManager extends React.Component {
     }
     `;
 
-    console.log(mutation);
     // send to Admin Application?
     // not sure exactly how we'll want to do this
   };
