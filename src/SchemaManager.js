@@ -72,7 +72,7 @@ class SchemaManager extends React.Component {
         style={{ textAlign: 'left' }}
       >
         <h1 className="title is-2">Schema</h1>
-        <div className="box schema-box">
+        <div className="box" style={{ padding: "2rem" }}>
           <CodeMirror 
             value={this.state.schema}
             options={{

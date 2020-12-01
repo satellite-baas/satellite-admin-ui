@@ -100,10 +100,32 @@
   background-color: white;
 }
 
+.box {
+  padding: 2rem;
+}
+
 .schema-box {
   padding: 2.2rem;
 }
 
 .cm-s-material.CodeMirror {
   border-radius: 6px;
+}
+
+.graphiql-container {
+  border: 2px solid lightgray;
+  height: 95vh;
+  box-shadow: 1px 2px 3px black;
+}
+
+.graphiql-container .topBar {
+  height: 50px;
+}
+
+.topBar .title {
+  margin-top: 20px;
+}
+
+.graphiql-container .doc-explorer-title-bar {
+  height: 50px;
 }

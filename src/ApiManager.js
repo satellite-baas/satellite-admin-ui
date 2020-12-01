@@ -53,12 +53,11 @@ const ApiManager = () => {
 
   return (
     <div>
-      <AddApiKeyButton 
-        addKey={addKey}
-      />
+      <h1 className="title is-2 has-text-left">API Key Manager</h1>
       <ApiKeyTable 
         keys={keys}
         deleteKey={deleteKey}
+        addKey={addKey}
       />
     </div>
   );

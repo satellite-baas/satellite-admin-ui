@@ -30,7 +30,7 @@ const AddApiKeyButton = ({ addKey }) => {
   return (
     <div>
       <button
-        className="button"
+        className="button is-fullwidth is-info mt-5"
         onClick={handleOpenModal}
       >
         New API Key

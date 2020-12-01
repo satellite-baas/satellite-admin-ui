@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import AddApiKeyButton from './AddApiKeyButton';
+
 import './ApiKeyTable.css';
 
-const ApiKeyTable = ({ keys, deleteKey }) => {
+const ApiKeyTable = ({ keys, deleteKey, addKey }) => {
   const [shownKey, setShownKey] = useState(null);
   const [showDelete, setShowDelete ] = useState(false);
   const [keyToDelete, setKeyToDelete] = useState(null);
@@ -33,7 +35,7 @@ const ApiKeyTable = ({ keys, deleteKey }) => {
   };
 
   return (
-    <div>
+    <div className="box" style={{ padding: "2rem" }}>
       <table className="table is-fullwidth">
         <thead>
           <tr>
@@ -70,25 +72,12 @@ const ApiKeyTable = ({ keys, deleteKey }) => {
                     ></i>
                   </span>
                 </td>
-                {/* <td>
-                  <span>
-                    <FontAwesomeIcon 
-                      icon={faCopy} 
-                      onClick={() => handleCopyKey(key.id)} 
-                      className="action-icon"
-                    />
-                    <FontAwesomeIcon 
-                      icon={faTrashAlt} 
-                      onClick={() => handleOpenModal(key.id)}
-                      className="action-icon"
-                    />
-                  </span>
-                </td> */}
               </tr>
             );
           })}
         </tbody>
       </table>
+      <AddApiKeyButton addKey={addKey} />
     </div>
   );
 };
