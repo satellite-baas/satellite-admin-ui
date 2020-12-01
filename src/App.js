@@ -15,7 +15,7 @@ import Navbar from "./Navbar";
 import Header from './Header';
 
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bulma/css/bulma.css';
 
 // state for schema, and api keys
 
