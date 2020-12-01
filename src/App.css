@@ -73,3 +73,13 @@
 .CodeMirror {
   height: 400px;
 }
+
+.toggle {
+  padding: 0 15px 0 0;
+  cursor: pointer;
+}
+
+.delete-backend {
+  padding: 0 0 0 15px;
+  cursor: pointer;
+}

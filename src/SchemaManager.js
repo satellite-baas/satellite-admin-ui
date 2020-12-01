@@ -5,7 +5,6 @@ import 'codemirror/addon/lint/lint';
 import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
-import { Button } from 'react-bootstrap';
 
 class SchemaManager extends React.Component {
   constructor(props) {
@@ -84,14 +83,14 @@ class SchemaManager extends React.Component {
           }}
           onChange={(editor, data, value) => this.handleUpdateSchema(value)}
         />
-        <Button
+        <button
           block
           variant="primary"
           style={{ marginTop: '5px' }}
           onClick={this.handleSubmitSchema}
         >
           Deploy
-        </Button>
+        </button>
       </div>
     );
   }

@@ -1,9 +1,4 @@
 import React, { useState } from 'react';
-import { Table } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Modal, Button } from 'react-bootstrap';
-
 import './ApiKeyTable.css';
 
 const ApiKeyTable = ({ keys, deleteKey }) => {
@@ -39,36 +34,7 @@ const ApiKeyTable = ({ keys, deleteKey }) => {
 
   return (
     <div>
-      <Modal 
-        show={showDelete} 
-        onHide={handleCloseModal}
-      >
-        <Modal.Header 
-          closeButton
-        >
-          <Modal.Title>Delete API Key</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Are you sure you'd like to delete this API key? This action is irreversible.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            className="button"
-            variant="secondary"
-            onClick={handleCloseModal}
-          >
-            Close
-          </Button>
-          <Button
-            className="button is-primary"
-            variant="primary"
-            onClick={handleDelete}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Table hover bordered striped>
+      <table className="table">
         <thead>
           <tr>
             <th>Key</th>
@@ -88,6 +54,23 @@ const ApiKeyTable = ({ keys, deleteKey }) => {
                 </td>
                 <td>{key.admin ? "Admin" : "Client"}</td>
                 <td>
+                  <span 
+                    className="icon toggle" 
+                    onClick={() => handleCopyKey(key.id)}
+                  >
+                    <i className="fas fa-copy"></i>
+                  </span> 
+                  |
+                  <span 
+                    className="icon delete-backend"
+                    onClick={() => handleOpenModal(key.id)}
+                  >
+                    <i 
+                      className="fas fa-trash-alt"
+                    ></i>
+                  </span>
+                </td>
+                {/* <td>
                   <span>
                     <FontAwesomeIcon 
                       icon={faCopy} 
@@ -100,12 +83,12 @@ const ApiKeyTable = ({ keys, deleteKey }) => {
                       className="action-icon"
                     />
                   </span>
-                </td>
+                </td> */}
               </tr>
             );
           })}
         </tbody>
-      </Table>
+      </table>
     </div>
   );
 };
