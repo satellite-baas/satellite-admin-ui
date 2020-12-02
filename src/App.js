@@ -29,11 +29,15 @@ const schema = "";
 const satellites = [{
   id: 1,
   name: 'Todo App',
-  domain: 'todoapp'
+  domain: 'todoapp',
+  endpoint: 'todoapp.localhost.com',
+  apiKey: uuidv4()
 }, {
   id: 2,
   name: 'Shopping Cart',
-  domain: 'shoppingcart'
+  domain: 'shoppingcart',
+  endpoint: 'shoppingcart.localhost.com',
+  apiKey: uuidv4()
 }];
 
 // schema is fetched on route load of schema
@@ -83,7 +87,9 @@ class App extends React.Component {
     this.setState({
       satellites: satellites.concat({
         id: 3,
-        name
+        name,
+        endpoint: 'random.localhost.com',
+        apiKey: uuidv4()
       })
     });
 
@@ -93,6 +99,8 @@ class App extends React.Component {
   };
 
   render() { 
+    const satellite = this.state.satellites[0];
+
     return (
       <div className="App">
         { this.state.userId ? (
@@ -109,7 +117,9 @@ class App extends React.Component {
                 <Navbar />
               </div>          
               <div className="column is-four-fifths">
-                <Main />
+                <Main 
+                  satellite={satellite}
+                />
               </div>          
             </div>
           </Router>

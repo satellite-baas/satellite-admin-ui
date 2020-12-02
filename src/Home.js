@@ -62,10 +62,42 @@ class Home extends React.Component {
   };
 
   render() { 
+    const { satellite } = this.props;
+
     return (
-      <div>
-        
-      </div>
+      <>
+        { satellite ? (
+          <>
+            <h1 className="title is-2 has-text-left">
+              {satellite.name}
+              <span 
+                className={`tag ${this.state.healthy ? 'is-success' : 'is-danger'} ml-4 health-tag is-medium`}
+              >
+                {this.state.healthy ? 'Healthy' : 'Down'}
+              </span>
+            </h1>
+            <div className="columns is-centered is-multiline">
+              <div className="column is-half">
+                <div className="box has-text-left">
+                  <h1 className="title is-4 mb-5">Endpoint</h1>
+                  <p className="subtitle is-5">{satellite.endpoint}</p>
+                  <h1 className="title is-4">API Key</h1>
+                  <p className="subtitle">{satellite.apiKey}</p>
+                </div>
+              </div>
+              <div className="column is-half">
+                <div className="box has-text-left">
+
+                </div>
+              </div>
+            </div>
+            
+          </>
+        ) : (
+          null
+        )}
+
+      </>
     );
   }
 };

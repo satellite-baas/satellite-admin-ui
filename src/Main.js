@@ -5,7 +5,7 @@ import SchemaManager from './SchemaManager.js';
 import ApiManager from './ApiManager';
 import Home from './Home';
 
-const Main = () => {
+const Main = ({ satellite }) => {
   return (
     <div className="main-container">
       <Switch>
@@ -19,7 +19,9 @@ const Main = () => {
           <SchemaExplorer />
         </Route>
         <Route path="/">
-          <Home />
+          <Home 
+            satellite={satellite}
+          />
         </Route>
       </Switch>
     </div>
