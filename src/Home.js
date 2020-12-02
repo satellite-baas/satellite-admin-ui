@@ -1,11 +1,29 @@
 import React from 'react';
 
-const Home = () => {
-  return (
-    <div>
-      
-    </div>
-  );
+class Home extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      healthy: false
+    };
+  }
+
+  componentDidMount() {
+    // start interval
+  }
+
+  componentWillUnmount() {
+    // erase interval
+  }
+
+  render() { 
+    return (
+      <div>
+        
+      </div>
+    );
+  }
 };
 
 export default Home;

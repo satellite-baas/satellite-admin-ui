@@ -66,7 +66,7 @@ const Header = ({
     <div className="header-container">
       <div className={`modal ${show ? "is-active" : ""}`}>
         <div className="modal-background">
-          <div className="modal-card">
+          <div id="centered-modal" className="modal-card">
             <header className="modal-card-head">
               New Satellite
             </header>
