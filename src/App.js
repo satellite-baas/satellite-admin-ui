@@ -94,12 +94,14 @@ class App extends React.Component {
     });
 
     this.setState({
-      currentSatellite: satellites[satellites.length - 1]
+      currentSatellite: satellites[satellites.length - 1].id
     });
   };
 
   render() { 
-    const satellite = this.state.satellites[0];
+    const satellite = this.state.satellites.filter(function(sat) {
+      return sat.id === this.state.currentSatellite;
+    }, this)[0];
 
     return (
       <div className="App">

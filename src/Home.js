@@ -61,6 +61,10 @@ class Home extends React.Component {
     })
   };
 
+  handleOpenModal = () => {
+
+  };
+
   render() { 
     const { satellite } = this.props;
 
@@ -68,25 +72,44 @@ class Home extends React.Component {
       <>
         { satellite ? (
           <>
-            <h1 className="title is-2 has-text-left">
-              {satellite.name}
-              <span 
-                className={`tag ${this.state.healthy ? 'is-success' : 'is-danger'} ml-4 health-tag is-medium`}
-              >
-                {this.state.healthy ? 'Healthy' : 'Down'}
-              </span>
-            </h1>
             <div className="columns is-centered is-multiline">
-              <div className="column is-half">
+              <div className="column is-three-quarters">
+                <h1 className="title is-2 has-text-left">
+                  {satellite.name}
+                  <span 
+                    className={`tag ${this.state.healthy ? 'is-success' : 'is-danger'} ml-4 health-tag is-medium`}
+                  >
+                    {this.state.healthy ? 'Healthy' : 'Down'}
+                  </span>
+                </h1>
                 <div className="box has-text-left">
-                  <h1 className="title is-4 mb-5">Endpoint</h1>
-                  <p className="subtitle is-5">{satellite.endpoint}</p>
-                  <h1 className="title is-4">API Key</h1>
-                  <p className="subtitle">{satellite.apiKey}</p>
-                </div>
-              </div>
-              <div className="column is-half">
-                <div className="box has-text-left">
+                  <h1 className="title is-4 mb-6">Endpoint</h1>
+                  <p className="subtitle is-5">
+                    {satellite.endpoint}
+                    <span className="icon is-small ml-3">
+                      <i className="far fa-copy clicky"></i>
+                    </span>
+                  </p>
+                  <hr/>
+                  <h1 className="title is-4 mb-6">API Key</h1>
+                  <p className="subtitle">
+                    {satellite.apiKey}
+                    <span className="icon is-small ml-3">
+                        <i className="far fa-copy clicky"></i>
+                    </span>
+                    <span className="icon is-small ml-3">
+                        <i className="fas fa-redo clicky"></i>
+                    </span>                
+                  </p>
+                  <hr/>
+                  <div className="buttons is-centered">
+                    <button 
+                      className="button is-danger"
+                      onClick={this.handleOpenModal}
+                    >
+                      Destroy Satellite
+                    </button>
+                  </div>
 
                 </div>
               </div>
