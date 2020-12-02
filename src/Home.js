@@ -7,7 +7,8 @@ class Home extends React.Component {
     this.state = {
       healthy: false,
       uptime: 0,
-      intervalID: null
+      intervalID: null,
+      show: false
     };
   }
 
@@ -62,7 +63,16 @@ class Home extends React.Component {
   };
 
   handleOpenModal = () => {
+    this.setState({ show: true });
+  };
 
+  handleCloseModal = () => {
+    this.setState({ show: false });
+  };
+
+  handleConfirmDestroy = () => {
+    this.props.handleDestroySatellite();
+    this.handleCloseModal();
   };
 
   render() { 
@@ -73,6 +83,34 @@ class Home extends React.Component {
         { satellite ? (
           <>
             <div className="columns is-centered is-multiline">
+              <div className={`modal ${this.state.show ? "is-active" : ""}`}>
+                <div className="modal-background">
+                  <div id="centered-modal" className="modal-card">
+                    <header className="modal-card-head">
+                      Destroy Satellite
+                    </header>
+                    <section className="modal-card-body">
+                      <p className="subtitle">Are you sure you want to delete this Satellite? This action is irreversible.</p>
+                    </section>
+                    <footer className="modal-card-foot">
+                      <button 
+                        className="button is-danger" 
+                        onClick={this.handleConfirmDestroy}
+                      >Destroy Satellite</button>
+                      <button 
+                        className="button" 
+                        onClick={this.handleCloseModal}
+                      >
+                        Cancel
+                      </button>
+                    </footer>
+                  </div>
+                  <button
+                    className="modal-close is-large"
+                    onClick={this.handleCloseModal}
+                  ></button>
+                </div>
+              </div>
               <div className="column is-three-quarters">
                 <h1 className="title is-2 has-text-left">
                   {satellite.name}
@@ -110,7 +148,6 @@ class Home extends React.Component {
                       Destroy Satellite
                     </button>
                   </div>
-
                 </div>
               </div>
             </div>

@@ -107,30 +107,30 @@ const Header = ({
             <p className="subtitle is-3">Satellite</p>
           </div>
           <div className="level-item">
-            <div className="select">
               {
                 satellites.length === 0 ? (
                   null
                 ) : (
-                  <select
-                    value={selectedSatellite}
-                    onChange={handleSelectChange}
-                  >
-                  {satellites.map(function(satellite, idx) {
-                      return (
-                        <option
-                          key={idx}
-                          value={satellite.id}
-                        >
-                          {satellite.name}
-                        </option>
-                      );
-                    })
-                    }
-                  </select>
+                  <div className="select">
+                    <select
+                      value={selectedSatellite}
+                      onChange={handleSelectChange}
+                    >
+                    {satellites.map(function(satellite, idx) {
+                        return (
+                          <option
+                            key={idx}
+                            value={satellite.id}
+                          >
+                            {satellite.name}
+                          </option>
+                        );
+                      })
+                      }
+                    </select>
+                  </div>
                 )
               }
-            </div> 
           </div>
           <div className="level-item">
             <button

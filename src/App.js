@@ -98,6 +98,23 @@ class App extends React.Component {
     });
   };
 
+  handleDestroySatellite = () => {
+    // fetch POST to controller to tear down satellite
+
+    const updatedSatellites = this.state.satellites.filter(satellite => satellite.id !== this.state.currentSatellite);
+    const context = this;
+
+    this.setState(
+      { satellites: updatedSatellites }, 
+      () => {
+        if (this.state.satellites.length > 0) {
+          this.setState({ currentSatellite: this.state.satellites[0].id })
+        } else {
+          this.setState({ currentSatellite: null });
+        }
+      });
+  };
+
   render() { 
     const satellite = this.state.satellites.filter(function(sat) {
       return sat.id === this.state.currentSatellite;
@@ -121,6 +138,7 @@ class App extends React.Component {
               <div className="column is-four-fifths">
                 <Main 
                   satellite={satellite}
+                  handleDestroySatellite={this.handleDestroySatellite}
                 />
               </div>          
             </div>

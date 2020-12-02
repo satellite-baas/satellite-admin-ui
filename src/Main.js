@@ -5,7 +5,7 @@ import SchemaManager from './SchemaManager.js';
 import ApiManager from './ApiManager';
 import Home from './Home';
 
-const Main = ({ satellite }) => {
+const Main = ({ satellite, handleDestroySatellite }) => {
   return (
     <div className="main-container">
       <Switch>
@@ -21,6 +21,7 @@ const Main = ({ satellite }) => {
         <Route path="/">
           <Home 
             satellite={satellite}
+            handleDestroySatellite={handleDestroySatellite}
           />
         </Route>
       </Switch>
