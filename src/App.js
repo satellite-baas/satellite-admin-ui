@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Navbar from "./Navbar";
 import Header from './Header';
 import Main from './Main';
+import Authentication from './Authentication';
 
 import './App.css';
 import 'bulma/css/bulma.css';
@@ -30,19 +31,32 @@ const schema = "";
 // keys are fetched on route load of api
 
 const App = () => {
+  const [currentSatellite, setCurrentSatellite] = useState({});
+  const [userId, setUserId] = useState(null);
+
+  const handleUserId = (id) => {
+    setUserId(id);
+  };
+
   return (
-    <div className="App">    
-      <Router>
-        <Header />
-        <div className="columns is-fullheight is-gapless">
-          <div className="column is-one-fifth nav-container">
-            <Navbar />
-          </div>          
-          <div className="column is-four-fifths">
-            <Main />
-          </div>          
-        </div>
-      </Router>
+    <div className="App">
+      { userId ? (
+        <Router>
+          <Header />
+          <div className="columns is-fullheight is-gapless">
+            <div className="column is-one-fifth nav-container">
+              <Navbar />
+            </div>          
+            <div className="column is-four-fifths">
+              <Main />
+            </div>          
+          </div>
+        </Router>
+      ) : (
+        <Authentication 
+          handleUserId={handleUserId}
+        />
+      )}    
     </div>
   );
 };

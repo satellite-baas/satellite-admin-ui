@@ -14,8 +14,9 @@ const NavbarHeader = () => {
     <aside className="menu" style={styles}>
       <p className="menu-label">Overview</p>
       <ul className="menu-list">
-        <li><Link to="/">Home</Link></li>
-
+        <li>  
+          <Link to="/">Home</Link>
+        </li>
       </ul>
       <p className="menu-label">Schema</p>
       <ul className="menu-list">

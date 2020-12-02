@@ -123,9 +123,21 @@
 }
 
 .topBar .title {
-  margin-top: 20px;
+  display: none;
 }
 
 .graphiql-container .doc-explorer-title-bar {
   height: 50px;
+}
+
+.graphiql-container .execute-button-wrap {
+  margin-left: 0;
+}
+
+.graphiql-container .doc-explorer-title-bar, .graphiql-container .history-title-bar {
+  height: 50px;
+}
+
+.vertical-center {
+  margin-top: 150px;
 }

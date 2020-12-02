@@ -37,7 +37,7 @@ class SchemaManager extends React.Component {
     .then(json => {
       setTimeout(() => {
         this.handleUpdateSchema(json.data.getGQLSchema.schema);
-      }, 3000);
+      }, 1000);
     })
     .catch(err => {
       this.handleSubmitSchema('Could not load schema from backend.');
