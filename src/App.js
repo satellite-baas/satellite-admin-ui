@@ -26,39 +26,101 @@ const keys = [{
 }];
 
 const schema = "";
+const satellites = [{
+  id: 1,
+  name: 'Todo App',
+  domain: 'todoapp'
+}, {
+  id: 2,
+  name: 'Shopping Cart',
+  domain: 'shoppingcart'
+}];
 
 // schema is fetched on route load of schema
 // keys are fetched on route load of api
 
-const App = () => {
-  const [currentSatellite, setCurrentSatellite] = useState({});
-  const [userId, setUserId] = useState(null);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const handleUserId = (id) => {
-    setUserId(id);
+    this.state = {
+      currentSatellite: null,
+      satellites: [],
+      userId: null
+    };
+  }
+
+  componentDidMount() {
+    // make fetch call to controller to get all satellites for
+    // current user with id
+
+    // set current satellite to the first
+    // set satellites to the returned array
+
+    // for now we'll use static state
+    this.setState({
+      satellites,
+      currentSatellite: 1
+    });
+  }
+
+  handleUserId = (id) => {
+    this.setState({ userId: id });
   };
 
-  return (
-    <div className="App">
-      { userId ? (
-        <Router>
-          <Header />
-          <div className="columns is-fullheight is-gapless">
-            <div className="column is-one-fifth nav-container">
-              <Navbar />
-            </div>          
-            <div className="column is-four-fifths">
-              <Main />
-            </div>          
-          </div>
-        </Router>
-      ) : (
-        <Authentication 
-          handleUserId={handleUserId}
-        />
-      )}    
-    </div>
-  );
+  handleSelectedSatelliteChange = (id) => {
+    this.setState({ currentSatellite: id });
+  };
+
+  handleLogout = () => {
+    this.setState({
+      userId: null
+    });
+  };
+
+  handleNewSatellite = (name) => {
+    // fetch POST to controller with new satellite
+    this.setState({
+      satellites: satellites.concat({
+        id: 3,
+        name
+      })
+    });
+
+    this.setState({
+      currentSatellite: satellites[satellites.length - 1]
+    });
+  };
+
+  render() { 
+    return (
+      <div className="App">
+        { this.state.userId ? (
+          <Router>
+            <Header 
+              satellites={this.state.satellites}
+              currentSatellite={this.state.currentSatellite}
+              changeSatellite={this.handleSelectedSatelliteChange}
+              handleNewSatellite={this.handleNewSatellite}
+              handleLogout={this.handleLogout}
+            />
+            <div className="columns is-fullheight is-gapless">
+              <div className="column is-one-fifth nav-container">
+                <Navbar />
+              </div>          
+              <div className="column is-four-fifths">
+                <Main />
+              </div>          
+            </div>
+          </Router>
+        ) : (
+          <Authentication 
+            handleUserId={this.handleUserId}
+          />
+        )}    
+      </div>
+    );
+  }
 };
 
 export default App;
