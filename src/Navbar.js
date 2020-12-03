@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
-const styles = {
-  textAlign: 'left',
-  marginLeft: "27px",
-  borderRight: "2px solid lightgray",
-  height: "100vh",
-  paddingTop: "30px"
-};
-
 const NavbarHeader = () => {
   return (
-    <aside className="menu" style={styles}>
+    <aside className="menu sidebar-nav">
       <p className="menu-label">Overview</p>
       <ul className="menu-list">
         <li>  
@@ -22,10 +14,6 @@ const NavbarHeader = () => {
       <ul className="menu-list">
         <li><Link to="/explorer">API Explorer</Link></li>
         <li><Link to="/schema">Schema Manager</Link></li>     
-      </ul>
-      <p className="menu-label">Security</p>
-      <ul className="menu-list">
-        <li><Link to="/security">API Key Mananger</Link></li>
       </ul>
     </aside> 
   );

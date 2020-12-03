@@ -31,13 +31,15 @@ const satellites = [{
   name: 'Todo App',
   domain: 'todoapp',
   endpoint: 'todoapp.localhost.com',
-  apiKey: uuidv4()
+  apiKey: uuidv4(),
+  files: true
 }, {
   id: 2,
   name: 'Shopping Cart',
   domain: 'shoppingcart',
   endpoint: 'shoppingcart.localhost.com',
-  apiKey: uuidv4()
+  apiKey: uuidv4(),
+  files: false
 }];
 
 // schema is fetched on route load of schema
@@ -89,7 +91,8 @@ class App extends React.Component {
         id: 3,
         name,
         endpoint: 'random.localhost.com',
-        apiKey: uuidv4()
+        apiKey: uuidv4(),
+        files: false
       })
     });
 

@@ -8,7 +8,10 @@ class Home extends React.Component {
       healthy: false,
       uptime: 0,
       intervalID: null,
-      show: false
+      show: false,
+      staticVisible: false,
+      apiVisible: false,
+      endpointVisible: false
     };
   }
 
@@ -17,7 +20,7 @@ class Home extends React.Component {
 
     const intervalID = setInterval(() => {
       this.healthCheck();
-    }, 5000);
+    }, 30000);
 
     this.setState({ intervalID });
   }
@@ -75,6 +78,10 @@ class Home extends React.Component {
     this.handleCloseModal();
   };
 
+  handleShowField = (field) => {
+
+  };
+
   render() { 
     const { satellite } = this.props;
 
@@ -128,7 +135,9 @@ class Home extends React.Component {
                       <i className="far fa-copy clicky"></i>
                     </span>
                   </p>
-                  <hr/>
+                  {/* <hr/> */}
+                </div>
+                <div className="box has-text-left">
                   <h1 className="title is-4 mb-6">API Key</h1>
                   <p className="subtitle">
                     {satellite.apiKey}
@@ -139,10 +148,44 @@ class Home extends React.Component {
                         <i className="fas fa-redo clicky"></i>
                     </span>                
                   </p>
-                  <hr/>
+                  {/* <hr/> */}
+                </div>
+                <div className="box has-text-left">
+                  <div className="control has-icons-right">
+                    <h1 className="title is-4">
+                      Static Files
+                      <span 
+                        className="icon is-right dropdown-icon"
+                        onClick={() => this.handleShowField('static')}
+                      >
+                        <i className="fas fa-angle-double-down dropdown-icon-icon"></i>
+                      </span>
+                    </h1>
+                  </div>
+                  <div
+                    className={`${this.state.staticVisible ? 'is-active': 'is-hidden'}`}
+                  >
+                    <p className="subtitle mt-4">
+                      {satellite.files ? (
+                        'Currently serving static files.'
+                      ) : (
+                        'No static files served.'
+                      )}
+                      <span className="icon is-small ml-3">
+                        <i className="fas fa-file-upload clicky"></i>
+                      </span>
+                      <span className="icon is-small ml-3">
+                        <i className="fas fa-trash-alt clicky"></i>
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* <hr/> */}
+                </div>
+                <div className="box has-text-left">
                   <div className="buttons is-centered">
                     <button 
-                      className="button is-danger"
+                      className="button is-danger is-medium is-light is-fullwidth"
                       onClick={this.handleOpenModal}
                     >
                       Destroy Satellite
@@ -152,9 +195,18 @@ class Home extends React.Component {
               </div>
             </div>
             
+            
           </>
         ) : (
-          null
+          <div className="columns is-centered">
+            <div className="column is-half">
+              <div className="box">
+                <p className="subtitle">
+                  You have not launched any satellites.
+                </p>
+              </div>
+            </div>
+          </div>
         )}
 
       </>

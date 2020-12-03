@@ -159,3 +159,20 @@
 .clicky {
   cursor: pointer;
 }
+
+.sidebar-nav {
+  text-align: left;
+  margin-left: 27px;
+  border-right: 2px solid lightgray;
+  height: 100vh;
+  padding-top: 30px;
+}
+
+.dropdown-icon {
+  height: 1em;
+  width: 1em;
+}
+
+.dropdown-icon-icon {
+  color: black;
+}
