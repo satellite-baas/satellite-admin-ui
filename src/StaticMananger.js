@@ -131,6 +131,24 @@ class StaticManager extends React.Component {
     });
   };
 
+  handleCloseDeleteModal = () => {
+    this.setState({ show: false });
+  };
+
+  handleOpenDeleteModal = (name) => {
+    this.setState({ show: true, selectedFile: name });
+  };
+
+  handleConfirmDelete = () => {
+    // fetch POST to delete the file, now static
+    this.setState({
+      files: this.state.files.filter(file => file.name !== this.state.selectedFile)
+    }, () => {
+      this.setState({ selectedFile: null });
+      this.handleCloseDeleteModal();
+    })
+  };
+
   render() { 
     return (
       <div className="columns is-centered">
@@ -147,6 +165,34 @@ class StaticManager extends React.Component {
                 />
               </section>
             </div>
+          </div>
+        </div>
+        <div className={`modal ${this.state.show ? "is-active" : ""}`}>
+          <div className="modal-background">
+            <div id="centered-modal" className="modal-card">
+              <header className="modal-card-head">
+                Delete File
+              </header>
+              <section className="modal-card-body">
+                <p className="subtitle">Are you sure you want to delete this file? This action is irreversible.</p>
+              </section>
+              <footer className="modal-card-foot">
+                <button 
+                  className="button is-danger" 
+                  onClick={this.handleConfirmDelete}
+                >Delete File</button>
+                <button 
+                  className="button" 
+                  onClick={this.handleCloseDeleteModal}
+                >
+                  Cancel
+                </button>
+              </footer>
+            </div>
+            <button
+              className="modal-close is-large"
+              onClick={this.handleCloseDeleteModal}
+            ></button>
           </div>
         </div>
         <div className="column is-three-quarters has-text-left">
@@ -186,7 +232,7 @@ class StaticManager extends React.Component {
                         <td>
                           <span 
                             className="icon delete-backend"
-                            onClick={() => this.handleOpenModal(file.name)}
+                            onClick={() => this.handleOpenDeleteModal(file.name)}
                           >
                             <i 
                               className="fas fa-trash-alt"
