@@ -15,6 +15,10 @@ const NavbarHeader = () => {
         <li><Link to="/explorer">API Explorer</Link></li>
         <li><Link to="/schema">Schema Manager</Link></li>     
       </ul>
+      <p className="menu-label">Assets</p>
+      <ul className="menu-list">
+        <li><Link to="/files">Static File Manager</Link></li>
+      </ul>
     </aside> 
   );
 };

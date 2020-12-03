@@ -14,7 +14,7 @@ class Home extends React.Component {
       uptime: 0,
       intervalID: null,
       show: false,
-      staticVisible: false,
+      showAPI: false,
       apiVisible: false,
       endpointVisible: false
     };
@@ -70,6 +70,19 @@ class Home extends React.Component {
     })
   };
 
+  handleOpenAPIModal = () => {
+    this.setState({ showAPI: true });
+  };
+
+  handleCloseAPIModal = () => {
+    this.setState({ showAPI: false });
+  };
+
+  handleGetNewAPIKey = () => {
+    this.props.handleNewAPIKey();
+    this.handleCloseAPIModal();
+  };
+
   handleOpenModal = () => {
     this.setState({ show: true });
   };
@@ -97,6 +110,14 @@ class Home extends React.Component {
     }
 
     return;
+  };
+
+  handleCopy = (copyValue) => {
+    navigator.clipboard.writeText(copyValue).then(() => {
+      return true;
+    }, () => {
+      return null;
+    });
   };
 
   render() { 
@@ -132,6 +153,34 @@ class Home extends React.Component {
                   <button
                     className="modal-close is-large"
                     onClick={this.handleCloseModal}
+                  ></button>
+                </div>
+              </div>
+              <div className={`modal ${this.state.showAPI ? "is-active" : ""}`}>
+                <div className="modal-background">
+                  <div id="centered-modal" className="modal-card">
+                    <header className="modal-card-head">
+                      New API Key
+                    </header>
+                    <section className="modal-card-body">
+                      <p className="subtitle">Changing the API key requires updating all client applications. Are you sure you want to do this?</p>
+                    </section>
+                    <footer className="modal-card-foot">
+                      <button 
+                        className="button is-danger" 
+                        onClick={this.handleGetNewAPIKey}
+                      >Create API Key</button>
+                      <button 
+                        className="button" 
+                        onClick={this.handleCloseAPIModal}
+                      >
+                        Cancel
+                      </button>
+                    </footer>
+                  </div>
+                  <button
+                    className="modal-close is-large"
+                    onClick={this.handleCloseAPIModal}
                   ></button>
                 </div>
               </div>
@@ -198,51 +247,18 @@ class Home extends React.Component {
                   <div className={this.state.apiVisible ? 'is-active' : 'is-hidden'}>
                     <p className="subtitle mt-4">
                       {satellite.apiKey}
-                      <span className="icon is-small ml-3">
+                      <span 
+                        className="icon is-small ml-3"
+                        onClick={() => this.handleCopy(satellite.apiKey)}
+                      >
                           <i className="far fa-copy clicky"></i>
                       </span>
-                      <span className="icon is-small ml-3">
+                      <span 
+                        className="icon is-small ml-3"
+                        onClick={this.handleOpenAPIModal}
+                      >
                           <i className="fas fa-redo clicky"></i>
                       </span>                
-                    </p>
-                  </div>
-                </div>
-                <div className="box has-text-left">
-                  <div className="control has-icons-right">
-                    <h1 
-                      className="title is-4"
-                      onClick={() => this.handleShowField('static')}
-                    >
-                      Static Files
-                      <span
-                        style={iconSpanStyle}
-                        className={`icon is-right ${this.state.staticVisible ? 'is-active' : 'is-hidden'}`}
-                      >
-                        <i className={`fas fa-angle-double-up dropdown-icon`}></i>
-                      </span>
-                      <span
-                        style={iconSpanStyle}
-                        className={`icon is-right ${!this.state.staticVisible ? 'is-active' : 'is-hidden'}`}
-                      >
-                        <i className={`fas fa-angle-double-down dropdown-icon`}></i>
-                      </span>
-                    </h1>
-                  </div>
-                  <div
-                    className={`${this.state.staticVisible ? 'is-active': 'is-hidden'}`}
-                  >
-                    <p className="subtitle mt-4">
-                      {satellite.files ? (
-                        'Currently serving static files.'
-                      ) : (
-                        'No static files served.'
-                      )}
-                      <span className="icon is-small ml-3">
-                        <i className="fas fa-file-upload clicky"></i>
-                      </span>
-                      <span className="icon is-small ml-3">
-                        <i className="fas fa-trash-alt clicky"></i>
-                      </span>
                     </p>
                   </div>
                 </div>

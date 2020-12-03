@@ -101,6 +101,21 @@ class App extends React.Component {
     });
   };
 
+  handleNewAPIKey = () => {
+    // for current satellite
+    // generate new API Key
+
+    const updatedSatellites = this.state.satellites.map(function(sat) {
+      if (sat.id === this.state.currentSatellite) {
+        return Object.assign({}, sat, { apiKey: uuidv4() });
+      }
+
+      return sat;
+    }, this);
+
+    this.setState({ satellites: updatedSatellites });
+  };
+
   handleDestroySatellite = () => {
     // fetch POST to controller to tear down satellite
 
@@ -142,6 +157,7 @@ class App extends React.Component {
                 <Main 
                   satellite={satellite}
                   handleDestroySatellite={this.handleDestroySatellite}
+                  handleNewAPIKey={this.handleNewAPIKey}
                 />
               </div>          
             </div>

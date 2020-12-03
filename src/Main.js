@@ -5,10 +5,15 @@ import SchemaManager from './SchemaManager';
 import StaticManager from './StaticMananger';
 import Home from './Home';
 
-const Main = ({ satellite, handleDestroySatellite }) => {
+const Main = ({ satellite, handleDestroySatellite, handleNewAPIKey }) => {
   return (
     <div className="main-container">
       <Switch>
+        <Route path="/files">
+          <StaticManager 
+            satellite={satellite}
+          />
+        </Route>
         <Route path="/schema">
           <SchemaManager />
         </Route>
@@ -19,6 +24,7 @@ const Main = ({ satellite, handleDestroySatellite }) => {
           <Home 
             satellite={satellite}
             handleDestroySatellite={handleDestroySatellite}
+            handleNewAPIKey={handleNewAPIKey}
           />
         </Route>
       </Switch>
