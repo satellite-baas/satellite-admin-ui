@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FileForm from './FileForm';
 
 class StaticManager extends React.Component {
   constructor(props) {
@@ -7,6 +8,8 @@ class StaticManager extends React.Component {
     this.state = {
       show: false,
       showUpload: false,
+      loading: false,
+      done: false,
       files: [],
       selectedFile: null
     };
@@ -49,7 +52,7 @@ class StaticManager extends React.Component {
     } else if (size > 1000000000) { 
       updatedSize = Math.round(size / 1000000000 * 10) / 10;
       return `${updatedSize}GB`
-    }else if (size > 1000000) {
+    } else if (size > 1000000) {
       updatedSize = Math.round(size / 1000000 * 10) / 10;
       return `${updatedSize}MB`;
     } else {
@@ -57,17 +60,15 @@ class StaticManager extends React.Component {
     }
   };
 
-  handleFileChange = (e) => {
-    this.setState({
-      fileToUpload: e.target.files[0]
-    });
-  };
-
   handleUploadClick = () => {
     this.setState({
       showUpload: true
     });
 
+
+  };
+
+  handleUpload = (file) => {
     // make fetch request to POST file
 
     /*
@@ -91,18 +92,31 @@ class StaticManager extends React.Component {
     })
 
     */
-
-    const newFile = {
-      name: this.state.fileToUpload.name,
-      modified: this.state.fileToUpload.lastModifiedDate,
-      size: this.state.fileToUpload.size
+   const newFile = {
+      name: file.name,
+      modified: file.lastModifiedDate,
+      size: file.size
     };
 
     this.setState({
-      files: this.state.files.concat(newFile)
+      loading: true
+    }, () => {
+      // fetch request, we will simulate for now
+      setTimeout(() => {
+        this.setState({
+          files: this.state.files.concat(newFile)
+        }, () => {
+          this.setState({
+            loading: false,
+            showUpload: false,
+            done: {
+              type: 'success',
+              msg: 'File uploaded successfully.'
+            }
+          });
+        });
+      }, 2000)
     });
-
-    this.handleUploadDone();
   };
 
   handleUploadDone = () => {
@@ -111,9 +125,15 @@ class StaticManager extends React.Component {
     });
   };
 
+  closeNotification = () => {
+    this.setState({
+      done: null
+    });
+  };
+
   render() { 
     return (
-      <div className="columns is-centered is-multiline">
+      <div className="columns is-centered">
         <div className={`modal ${this.state.showUpload ? "is-active" : ""}`}>
           <div className="modal-background">
             <div id="centered-modal" className="modal-card">
@@ -121,50 +141,30 @@ class StaticManager extends React.Component {
                 File Upload
               </header>
               <section className="modal-card-body">
-                <p className="subtitle">Uploading file...</p>
-                <progress
-                  className="progress is-medium is-primary"
-                >
-                  45%
-                </progress>
+                <FileForm 
+                  handleUpload={this.handleUpload}
+                  loading={this.state.loading}
+                />
               </section>
             </div>
           </div>
         </div>
-        <div className="column is-full has-text-left">
-          <h1 className="title is-2">Static File Manager</h1>
-        </div>
-        <div className="column is-one-quarter has-text-left">
-          <div className="box">
-              <div className="file mb-2">
-                <label className="file-label">
-                  <input 
-                    className="file-input"
-                    type="file"
-                    onChange={this.handleFileChange}
-                  />
-                  <span className="file-cta">
-                    <span className="file-icon">
-                      <i className="fas fa-upload"></i>
-                    </span>
-                    <span className="file-label">
-                      Choose a file...
-                    </span>
-                  </span>
-                  <span className={`${this.state.fileToUpload ? 'is-active' : 'is-hidden'} file-name`}>
-                    {this.state.fileToUpload && this.state.fileToUpload.name}
-                  </span>
-                </label>
-              </div>
-              <button
-                className="button is-fullwidth is-info"
-                onClick={this.handleUploadClick}
-              >
-                Upload File
-              </button>
-            </div>
-        </div>
         <div className="column is-three-quarters has-text-left">
+          <h1 className="title is-2">Static File Manager</h1>
+          <div className="box">
+            <button
+              className="button is-fullwidth is-info"
+              onClick={this.handleUploadClick}
+            >
+              Upload File
+            </button>
+            {this.state.done && (
+              <div className={`mt-3 notification is-${this.state.done.type}`}>
+                <button class="delete" onClick={this.closeNotification}></button>
+                {this.state.done.msg}
+              </div>
+            )}
+          </div>
           <div className="box">
             <table className="table is-fullwidth">
               <thead>
