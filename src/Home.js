@@ -1,5 +1,10 @@
 import React from 'react';
 
+const iconSpanStyle = {
+  height: '1em',
+  width: '1em'
+};
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -79,12 +84,24 @@ class Home extends React.Component {
   };
 
   handleShowField = (field) => {
+    if (field === 'static') {
+      this.setState({ staticVisible: !this.state.staticVisible });
+    }
 
+    if (field === 'api') {
+      this.setState({ apiVisible: !this.state.apiVisible });
+    }
+
+    if (field === 'endpoint') {
+      this.setState({ endpointVisible: !this.state.endpointVisible });
+    }
+
+    return;
   };
 
   render() { 
     const { satellite } = this.props;
-
+    
     return (
       <>
         { satellite ? (
@@ -128,37 +145,86 @@ class Home extends React.Component {
                   </span>
                 </h1>
                 <div className="box has-text-left">
-                  <h1 className="title is-4 mb-6">Endpoint</h1>
-                  <p className="subtitle is-5">
-                    {satellite.endpoint}
-                    <span className="icon is-small ml-3">
-                      <i className="far fa-copy clicky"></i>
-                    </span>
-                  </p>
-                  {/* <hr/> */}
-                </div>
-                <div className="box has-text-left">
-                  <h1 className="title is-4 mb-6">API Key</h1>
-                  <p className="subtitle">
-                    {satellite.apiKey}
-                    <span className="icon is-small ml-3">
+                  <div className="control has-icons-right">
+                    <h1 
+                      className="title is-4"
+                      onClick={() => this.handleShowField('endpoint')}
+                    >
+                      Endpoint
+                      <span
+                        style={iconSpanStyle}
+                        className={`icon is-right ${this.state.endpointVisible ? 'is-active' : 'is-hidden'}`}
+                      >
+                        <i className={`fas fa-angle-double-up dropdown-icon`}></i>
+                      </span>
+                      <span
+                        style={iconSpanStyle}
+                        className={`icon is-right ${!this.state.endpointVisible ? 'is-active' : 'is-hidden'}`}
+                      >
+                        <i className={`fas fa-angle-double-down dropdown-icon`}></i>
+                      </span>
+                    </h1>
+                  </div>
+                  <div className={this.state.endpointVisible ? 'is-active' : 'is-hidden'}>
+                    <p className="subtitle is-5 mt-4">
+                      {satellite.endpoint}
+                      <span className="icon is-small ml-3">
                         <i className="far fa-copy clicky"></i>
-                    </span>
-                    <span className="icon is-small ml-3">
-                        <i className="fas fa-redo clicky"></i>
-                    </span>                
-                  </p>
-                  {/* <hr/> */}
+                      </span>
+                    </p>
+                  </div>
+
                 </div>
                 <div className="box has-text-left">
                   <div className="control has-icons-right">
-                    <h1 className="title is-4">
-                      Static Files
-                      <span 
-                        className="icon is-right dropdown-icon"
-                        onClick={() => this.handleShowField('static')}
+                    <h1 
+                      className="title is-4" 
+                      onClick={() => this.handleShowField('api')}
+                    >API Key
+                      <span
+                        style={iconSpanStyle}
+                        className={`icon is-right ${this.state.apiVisible ? 'is-active' : 'is-hidden'}`}
                       >
-                        <i className="fas fa-angle-double-down dropdown-icon-icon"></i>
+                        <i className={`fas fa-angle-double-up dropdown-icon`}></i>
+                      </span>
+                      <span
+                        style={iconSpanStyle}
+                        className={`icon is-right ${!this.state.apiVisible ? 'is-active' : 'is-hidden'}`}
+                      >
+                        <i className={`fas fa-angle-double-down dropdown-icon`}></i>
+                      </span>
+                    </h1>
+                  </div>
+                  <div className={this.state.apiVisible ? 'is-active' : 'is-hidden'}>
+                    <p className="subtitle mt-4">
+                      {satellite.apiKey}
+                      <span className="icon is-small ml-3">
+                          <i className="far fa-copy clicky"></i>
+                      </span>
+                      <span className="icon is-small ml-3">
+                          <i className="fas fa-redo clicky"></i>
+                      </span>                
+                    </p>
+                  </div>
+                </div>
+                <div className="box has-text-left">
+                  <div className="control has-icons-right">
+                    <h1 
+                      className="title is-4"
+                      onClick={() => this.handleShowField('static')}
+                    >
+                      Static Files
+                      <span
+                        style={iconSpanStyle}
+                        className={`icon is-right ${this.state.staticVisible ? 'is-active' : 'is-hidden'}`}
+                      >
+                        <i className={`fas fa-angle-double-up dropdown-icon`}></i>
+                      </span>
+                      <span
+                        style={iconSpanStyle}
+                        className={`icon is-right ${!this.state.staticVisible ? 'is-active' : 'is-hidden'}`}
+                      >
+                        <i className={`fas fa-angle-double-down dropdown-icon`}></i>
                       </span>
                     </h1>
                   </div>
@@ -179,8 +245,6 @@ class Home extends React.Component {
                       </span>
                     </p>
                   </div>
-
-                  {/* <hr/> */}
                 </div>
                 <div className="box has-text-left">
                   <div className="buttons is-centered">
@@ -194,8 +258,6 @@ class Home extends React.Component {
                 </div>
               </div>
             </div>
-            
-            
           </>
         ) : (
           <div className="columns is-centered">
