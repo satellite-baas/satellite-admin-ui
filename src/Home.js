@@ -25,7 +25,7 @@ class Home extends React.Component {
 
     const intervalID = setInterval(() => {
       this.healthCheck();
-    }, 30000);
+    }, 10000);
 
     this.setState({ intervalID });
   }
@@ -46,28 +46,29 @@ class Home extends React.Component {
       }
     `;
 
-    fetch('http://localhost:8080/admin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query })
-    })
-    .then(res => res.json())
-    .then(json => {
-      const alpha = json.data.health[json.data.health.length - 1];
+    // fetch(`http://${this.props.satellite.name}.${DOMAIN}:5000/admin`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'X-API-Key': `${API_KEY}`
+    //   },
+    //   body: JSON.stringify({ query })
+    // })
+    // .then(res => res.json())
+    // .then(json => {
+    //   const alpha = json.data.health[json.data.health.length - 1];
 
-      context.setState({
-        healthy: alpha.status === 'healthy',
-        uptime: alpha.uptime
-      });
-    })
-    .catch(err => {
-      context.setState({
-        healthy: false,
-        uptime: 0
-      });
-    })
+    //   context.setState({
+    //     healthy: alpha.status === 'healthy',
+    //     uptime: alpha.uptime
+    //   });
+    // })
+    // .catch(err => {
+    //   context.setState({
+    //     healthy: false,
+    //     uptime: 0
+    //   });
+    // })
   };
 
   handleOpenAPIModal = () => {

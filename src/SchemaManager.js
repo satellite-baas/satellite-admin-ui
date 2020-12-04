@@ -11,7 +11,8 @@ class SchemaManager extends React.Component {
     super(props);
 
     this.state = {
-      schema: '# Insert schema here.'
+      schema: '# Insert schema here.',
+      notification: null
     };
   }
 
@@ -26,10 +27,11 @@ class SchemaManager extends React.Component {
       }
     `;
 
-    fetch('http://localhost:8080/admin', {
+    fetch(`http://localhost:3030/admin`, {
       method: 'POST',
       headers: { 
-       'Content-Type': 'application/json'
+       'Content-Type': 'application/json',
+       'X-API-Key': 'secret'
       },
       body: JSON.stringify({ query })
     })
@@ -40,7 +42,7 @@ class SchemaManager extends React.Component {
       }, 1000);
     })
     .catch(err => {
-      this.handleSubmitSchema('Could not load schema from backend.');
+      this.handleUpdateSchema('# Could not load schema from backend.');
     });
   }
 
@@ -62,8 +64,39 @@ class SchemaManager extends React.Component {
     }
     `;
 
-    // send to Admin Application?
-    // not sure exactly how we'll want to do this
+    this.setState({
+      notification: {
+        type: 'light',
+        msg: 'Updating schema...'
+      }
+    });
+    
+    fetch(`http://localhost:3030/admin/schema`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-binary'
+      },
+      body: this.state.schema
+    })
+    .then(res => res.json())
+    .then(json => {
+      this.setState({ notification: {
+        type: 'success',
+        msg: 'Schema successfully updated.'
+      }});
+    })
+    .catch(err => {
+      this.handleUpdateSchema('# Could not update schema.', () => {
+        this.setState({ notification: {
+          type: 'danger',
+          msg: 'Could not update schema.'
+        }});
+      });
+    });
+  };
+
+  handleCloseDelete = () => {
+    this.setState({ notification: null });
   };
 
   render() {
@@ -72,6 +105,12 @@ class SchemaManager extends React.Component {
         style={{ textAlign: 'left' }}
       >
         <h1 className="title is-2">Schema</h1>
+        {this.state.notification &&         
+          <div className={`mb-3 notification is-${this.state.notification.type}`}>
+            <button className="delete" onClick={this.handleCloseDelete}></button>
+            {this.state.notification.msg}
+          </div>
+        }
         <div className="box" style={{ padding: "2rem" }}>
           <CodeMirror 
             value={this.state.schema}

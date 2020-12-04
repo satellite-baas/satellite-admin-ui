@@ -15,10 +15,14 @@ const Main = ({ satellite, handleDestroySatellite, handleNewAPIKey }) => {
           />
         </Route>
         <Route path="/schema">
-          <SchemaManager />
+          <SchemaManager 
+            satellite={satellite}
+          />
         </Route>
         <Route path="/explorer">
-          <SchemaExplorer />
+          <SchemaExplorer 
+            satellite={satellite}
+          />
         </Route>
         <Route path="/">
           <Home 

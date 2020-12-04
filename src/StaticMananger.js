@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import FileForm from './FileForm';
 
+const condenseName = (name) => {
+  return name.split(' ').join('_').toLowerCase();
+};
+
 class StaticManager extends React.Component {
   constructor(props) {
     super(props);
@@ -19,23 +23,18 @@ class StaticManager extends React.Component {
     // make fetch to express API for list of static files
     // assign returned json array to files in state
 
-    // for now, static
-
-    const items = [{
-      name: 'hello.txt',
-      size: 6432,
-      modified: "2020-12-03T15:03:14.753Z"
-    }, {
-      name: "subdir/another/archlinux-2020.11.01-x86_64.iso",
-      size: 1000000001,
-      modified: "2020-12-03T15:01:56.447Z"
-    }, {
-      name: 'subdir/dome.jpg',
-      size: 1944445,
-      modifed: "2020-12-03T15:02:29.818Z"
-    }];
-
-    this.setState({ files: items });
+    fetch(`http://localhost:3030/files`)
+    .then(res => { 
+      return res.json();
+    })
+    .then(json => {
+      this.setState({
+        files: json
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   handleOpenModal = (name) => {
@@ -69,54 +68,65 @@ class StaticManager extends React.Component {
   };
 
   handleUpload = (file) => {
-    // make fetch request to POST file
+    const context = this;
+    const data = new FormData();
+    const fileInput = document.querySelector('#file_upload');
 
-    /*
+    data.append('file', fileInput.files[0]);
 
-    fetch('', {
+    fetch(`http://localhost:3030/upload`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: this.state.fileToUpload
+      body: data
     })
-    .then(res => res.json())
-    .then(json => {
-      // attach to state
-      // give confirmation
-      // allow to close out of modal
+    .then(res => {
+      const newFile = {
+        name: file.name,
+        modified: new Date(),
+        size: file.size
+      };
+      console.log(newFile)
+      this.setState({
+        files: context.state.files.concat(newFile)
+      }, () => {
+        context.setState({
+          loading: false,
+          showUpload: false,
+          done: {
+            type: 'success',
+            msg: 'File uploaded successfully.'
+          }
+        });
+      });
     })
     .catch(err => {
-      // give error
-      // allow close out of modal
+      console.log(err);
     })
 
-    */
-   const newFile = {
-      name: file.name,
-      modified: file.lastModifiedDate,
-      size: file.size
-    };
+  //  const newFile = {
+  //     name: file.name,
+  //     modified: file.lastModifiedDate,
+  //     size: file.size
+  //   };
 
-    this.setState({
-      loading: true
-    }, () => {
-      // fetch request, we will simulate for now
-      setTimeout(() => {
-        this.setState({
-          files: this.state.files.concat(newFile)
-        }, () => {
-          this.setState({
-            loading: false,
-            showUpload: false,
-            done: {
-              type: 'success',
-              msg: 'File uploaded successfully.'
-            }
-          });
-        });
-      }, 2000)
-    });
+  //   this.setState({
+  //     loading: true
+  //   }, () => {
+  //     // fetch request, we will simulate for now
+  //     setTimeout(() => {
+  //       this.setState({
+  //         files: this.state.files.concat(newFile)
+  //       }, () => {
+  //         this.setState({
+  //           loading: false,
+  //           showUpload: false,
+  //           done: {
+  //             type: 'success',
+  //             msg: 'File uploaded successfully.'
+  //           }
+  //         });
+  //       });
+  //     }, 2000)
+  //   });
   };
 
   handleUploadDone = () => {
@@ -141,12 +151,50 @@ class StaticManager extends React.Component {
 
   handleConfirmDelete = () => {
     // fetch POST to delete the file, now static
-    this.setState({
-      files: this.state.files.filter(file => file.name !== this.state.selectedFile)
-    }, () => {
-      this.setState({ selectedFile: null });
-      this.handleCloseDeleteModal();
+    const context = this;
+
+    fetch(`http://localhost:3030/file`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ fileName: this.state.selectedFile })
     })
+    .then(res => {
+      context.setState({
+        files: context.state.files.filter(file => file.name !== context.state.selectedFile)
+      }, () => {
+        context.setState({
+          done: {
+            type: 'success',
+            msg: 'File successfully deleted.'
+          },
+          show: false,
+          selectedFile: null
+        });
+      })
+      // success
+      // modify state
+    })
+    .catch(err => {
+      console.log(err)
+      // make notification
+      this.setState({
+        done: {
+          type: 'danger',
+          msg: 'Could not delete the selected file.'
+        }
+      });
+      // return
+    });
+
+
+    // this.setState({
+    //   files: this.state.files.filter(file => file.name !== this.state.selectedFile)
+    // }, () => {
+    //   this.setState({ selectedFile: null });
+    //   this.handleCloseDeleteModal();
+    // })
   };
 
   render() { 
@@ -165,6 +213,10 @@ class StaticManager extends React.Component {
                 />
               </section>
             </div>
+            <button
+              className="modal-close is-large"
+              onClick={this.handleUploadDone}
+            ></button>
           </div>
         </div>
         <div className={`modal ${this.state.show ? "is-active" : ""}`}>
@@ -206,7 +258,7 @@ class StaticManager extends React.Component {
             </button>
             {this.state.done && (
               <div className={`mt-3 notification is-${this.state.done.type}`}>
-                <button class="delete" onClick={this.closeNotification}></button>
+                <button className="delete" onClick={this.closeNotification}></button>
                 {this.state.done.msg}
               </div>
             )}

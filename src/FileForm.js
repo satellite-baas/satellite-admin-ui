@@ -29,6 +29,7 @@ const FileForm = ({ handleUpload, loading }) => {
             <label className="file-label">
               <input 
                 className="file-input"
+                id="file_upload"
                 type="file"
                 onChange={handleFileChange}
               />
