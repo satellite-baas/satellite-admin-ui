@@ -11,7 +11,7 @@ class SchemaManager extends React.Component {
     super(props);
 
     this.state = {
-      schema: '# Insert schema here.',
+      schema: '# Loading schema...',
       notification: null
     };
   }
@@ -30,8 +30,7 @@ class SchemaManager extends React.Component {
     fetch(`http://localhost:3030/admin`, {
       method: 'POST',
       headers: { 
-       'Content-Type': 'application/json',
-       'X-API-Key': 'secret'
+       'Content-Type': 'application/json'
       },
       body: JSON.stringify({ query })
     })
@@ -70,7 +69,7 @@ class SchemaManager extends React.Component {
         msg: 'Updating schema...'
       }
     });
-    
+
     fetch(`http://localhost:3030/admin/schema`, {
       method: 'POST',
       headers: {

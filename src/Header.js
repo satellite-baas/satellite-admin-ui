@@ -5,12 +5,19 @@ const Header = ({
   currentSatellite, 
   changeSatellite,
   handleLogout,
-  handleNewSatellite
+  handleNewSatellite,
+  handleClearDone,
+  loading,
+  done
 }) => {
   const [selectedSatellite, setSelectedSatellite] = useState(currentSatellite);
   const [newName, setNewName] = useState('');
   const [show, setShow] = useState(false);
   const [nameError, setNameError] = useState(false);
+
+  const clearDone = () => {
+    handleClearDone();
+  };
 
   const handleSelectChange = (e) => {
     setSelectedSatellite(e.target.value);
@@ -24,11 +31,11 @@ const Header = ({
   const handleCloseModal = () => {
     setNewName('');
     setShow(false);
+    clearDone();
   };
 
   const handleHeaderNewSatellite = () => {
     handleNewSatellite(newName);
-    setShow(false);
     setNewName('');
   };
 
@@ -71,32 +78,51 @@ const Header = ({
               New Satellite
             </header>
             <section className="modal-card-body">
-              <div className="field">
-                <label className="label has-text-left">Name</label>
-                <div className="control has-icons-left">
-                  <input 
-                    type="text"
-                    className={`input ${nameError ? 'is-danger' : ''}`}
-                    onChange={handleNameChange}
-                    value={newName}
-                  />
-                  <span className="icon is-small is-left">
-                    <i className="fas fa-user-astronaut"></i>
-                  </span>
+              {!loading && !done && (
+                <div className="field">
+                  <label className="label has-text-left">Name</label>
+                  <div className="control has-icons-left">
+                    <input 
+                      type="text"
+                      className={`input ${nameError ? 'is-danger' : ''}`}
+                      onChange={handleNameChange}
+                      value={newName}
+                    />
+                    <span className="icon is-small is-left">
+                      <i className="fas fa-user-astronaut"></i>
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
+              {loading && (
+                <div>
+                  <p className="subtitle">Launching new Satellite...</p>
+                  <progress className="progress is-medium is-primary">
+                    15%
+                  </progress>
+                </div>
+              )}
+              {done && (
+                <div>
+                  <p className="subtitle">{done.msg}</p>
+                </div>
+              )}
             </section>
-            <footer className="modal-card-foot">
-              <button 
-                className="button is-info" 
-                onClick={handleHeaderNewSatellite}
-                disabled={nameError}
-              >Create Satellite</button>
-              <button className="button" onClick={handleCloseModal}>Cancel</button>
-            </footer>
+            {loading || done ? (
+              <footer className="modal-card-foot"></footer>
+              ) : (
+              <footer className="modal-card-foot">
+                <button 
+                  className="button is-info" 
+                  onClick={handleHeaderNewSatellite}
+                  disabled={nameError}
+                >Create Satellite</button>
+                <button className="button" onClick={handleCloseModal}>Cancel</button>
+              </footer>
+            )}
           </div>
           <button
-            className="modal-close is-large"
+            className={`modal-close is-large ${!loading ? 'is-active' : 'is-hidden'}`}
             onClick={handleCloseModal}
           ></button>
         </div>

@@ -20,9 +20,6 @@ class StaticManager extends React.Component {
   }
 
   componentDidMount() {
-    // make fetch to express API for list of static files
-    // assign returned json array to files in state
-
     fetch(`http://localhost:3030/files`)
     .then(res => { 
       return res.json();
@@ -33,7 +30,12 @@ class StaticManager extends React.Component {
       });
     })
     .catch(err => {
-      console.log(err);
+      this.setState({
+        done: {
+          type: 'danger',
+          msg: 'Could not fetch files. Contact an administrator.'
+        }
+      });
     });
   }
 
@@ -99,34 +101,15 @@ class StaticManager extends React.Component {
       });
     })
     .catch(err => {
-      console.log(err);
-    })
-
-  //  const newFile = {
-  //     name: file.name,
-  //     modified: file.lastModifiedDate,
-  //     size: file.size
-  //   };
-
-  //   this.setState({
-  //     loading: true
-  //   }, () => {
-  //     // fetch request, we will simulate for now
-  //     setTimeout(() => {
-  //       this.setState({
-  //         files: this.state.files.concat(newFile)
-  //       }, () => {
-  //         this.setState({
-  //           loading: false,
-  //           showUpload: false,
-  //           done: {
-  //             type: 'success',
-  //             msg: 'File uploaded successfully.'
-  //           }
-  //         });
-  //       });
-  //     }, 2000)
-  //   });
+      context.setState({
+        loading: false,
+        showUpload: false,
+        done: {
+          type: 'danger',
+          msg: 'Could not upload file. Make sure it is under 1GB.'
+        }
+      });
+    });
   };
 
   handleUploadDone = () => {
@@ -150,7 +133,6 @@ class StaticManager extends React.Component {
   };
 
   handleConfirmDelete = () => {
-    // fetch POST to delete the file, now static
     const context = this;
 
     fetch(`http://localhost:3030/file`, {
@@ -172,29 +154,18 @@ class StaticManager extends React.Component {
           show: false,
           selectedFile: null
         });
-      })
-      // success
-      // modify state
+      });
     })
     .catch(err => {
-      console.log(err)
-      // make notification
-      this.setState({
+      context.setState({
         done: {
           type: 'danger',
           msg: 'Could not delete the selected file.'
-        }
+        },
+        show: false,
+        selectedFile: null
       });
-      // return
     });
-
-
-    // this.setState({
-    //   files: this.state.files.filter(file => file.name !== this.state.selectedFile)
-    // }, () => {
-    //   this.setState({ selectedFile: null });
-    //   this.handleCloseDeleteModal();
-    // })
   };
 
   render() { 
@@ -283,7 +254,7 @@ class StaticManager extends React.Component {
                         <td>{new Date(file.modified).toDateString()}</td>
                         <td>
                           <span 
-                            className="icon delete-backend"
+                            className="icon delete-backend ml-2"
                             onClick={() => this.handleOpenDeleteModal(file.name)}
                           >
                             <i 

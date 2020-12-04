@@ -46,6 +46,19 @@ class Home extends React.Component {
       }
     `;
 
+    fetch(`http://localhost:3030/health`, {
+      method: 'GET'
+    })
+    .then(res => {
+      context.setState({
+        healthy: true
+      })
+    })
+    .catch(err => {
+      context.setState({
+        healthy: false
+      });
+    });
     // fetch(`http://${this.props.satellite.name}.${DOMAIN}:5000/admin`, {
     //   method: 'POST',
     //   headers: {

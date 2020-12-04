@@ -52,7 +52,9 @@ class App extends React.Component {
     this.state = {
       currentSatellite: null,
       satellites: [],
-      userId: null
+      userId: null,
+      loading: false,
+      done: null
     };
   }
 
@@ -85,20 +87,43 @@ class App extends React.Component {
   };
 
   handleNewSatellite = (name) => {
-    // fetch POST to controller with new satellite
-    this.setState({
-      satellites: satellites.concat({
-        id: 3,
-        name,
-        endpoint: 'random.localhost.com',
-        apiKey: uuidv4(),
-        files: false
-      })
-    });
+    const context = this;
+    const newSat = {
+      id: 3,
+      name,
+      endpoint: 'random.localhost.com',
+      apiKey: uuidv4(),
+      files: false
+    };
 
-    this.setState({
-      currentSatellite: satellites[satellites.length - 1].id
-    });
+    // fetch POST to controller with new satellite
+
+    this.setState({ loading: true });
+      setTimeout(() => {
+        context.setState({
+          loading: false,
+          satellites: context.state.satellites.concat(newSat),
+          done: {
+            type: 'success',
+            msg: 'Satellite successfully launched.'
+          }
+        }, () => {
+          context.setState({ 
+ 
+          });
+        })
+      }, 2000);
+
+
+
+
+    // this.setState({
+    //   satellites: satellites.concat()
+    // });
+
+    // this.setState({
+    //   currentSatellite: satellites[satellites.length - 1].id
+    // });
   };
 
   handleNewAPIKey = () => {
@@ -133,6 +158,10 @@ class App extends React.Component {
       });
   };
 
+  handleClearDone = () => {
+    this.setState({ done: null });
+  };
+
   render() { 
     const satellite = this.state.satellites.filter(function(sat) {
       return sat.id === this.state.currentSatellite;
@@ -148,6 +177,9 @@ class App extends React.Component {
               changeSatellite={this.handleSelectedSatelliteChange}
               handleNewSatellite={this.handleNewSatellite}
               handleLogout={this.handleLogout}
+              handleClearDone={this.handleClearDone}
+              loading={this.state.loading}
+              done={this.state.done}
             />
             <div className="columns is-fullheight is-gapless">
               <div className="column is-one-fifth nav-container">
