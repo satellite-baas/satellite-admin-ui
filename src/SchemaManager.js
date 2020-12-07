@@ -18,7 +18,7 @@ class SchemaManager extends React.Component {
 
   componentDidMount() {
     // retrieve actual schema from Dgraph
-
+    const context = this;
     const query = `
       {
         getGQLSchema {
@@ -37,11 +37,11 @@ class SchemaManager extends React.Component {
     .then(res => res.json())
     .then(json => {
       setTimeout(() => {
-        this.handleUpdateSchema(json.data.getGQLSchema.schema);
+        context.handleUpdateSchema(json.data.getGQLSchema.schema);
       }, 1000);
     })
     .catch(err => {
-      this.handleUpdateSchema('# Could not load schema from backend.');
+      context.handleUpdateSchema('# Could not load schema from backend.');
     });
   }
 
