@@ -59,6 +59,7 @@ class Home extends React.Component {
         healthy: false
       });
     });
+
     // fetch(`http://${this.props.satellite.name}.${DOMAIN}:5000/admin`, {
     //   method: 'POST',
     //   headers: {
@@ -149,7 +150,7 @@ class Home extends React.Component {
                       Destroy Satellite
                     </header>
                     <section className="modal-card-body">
-                      <p className="subtitle">Are you sure you want to delete this Satellite? This action is irreversible.</p>
+                      <p className="subtitle">Are you sure you want to destroy this Satellite? This action is irreversible.</p>
                     </section>
                     <footer className="modal-card-foot">
                       <button 

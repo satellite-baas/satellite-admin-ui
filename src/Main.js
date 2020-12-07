@@ -5,7 +5,13 @@ import SchemaManager from './SchemaManager';
 import StaticManager from './StaticMananger';
 import Home from './Home';
 
-const Main = ({ satellite, handleDestroySatellite, handleNewAPIKey }) => {
+const Main = ({ 
+  satellite, 
+  handleDestroySatellite, 
+  handleNewAPIKey,
+  loading,
+  done
+}) => {
   return (
     <div className="main-container">
       <Switch>
@@ -29,6 +35,8 @@ const Main = ({ satellite, handleDestroySatellite, handleNewAPIKey }) => {
             satellite={satellite}
             handleDestroySatellite={handleDestroySatellite}
             handleNewAPIKey={handleNewAPIKey}
+            loading={loading}
+            done={done}
           />
         </Route>
       </Switch>

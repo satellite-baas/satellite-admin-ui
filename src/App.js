@@ -54,7 +54,9 @@ class App extends React.Component {
       satellites: [],
       userId: null,
       loading: false,
-      done: null
+      done: null,
+      loadingDestroy: false,
+      doneDestroy: null
     };
   }
 
@@ -113,17 +115,6 @@ class App extends React.Component {
           });
         })
       }, 2000);
-
-
-
-
-    // this.setState({
-    //   satellites: satellites.concat()
-    // });
-
-    // this.setState({
-    //   currentSatellite: satellites[satellites.length - 1].id
-    // });
   };
 
   handleNewAPIKey = () => {
@@ -190,6 +181,8 @@ class App extends React.Component {
                   satellite={satellite}
                   handleDestroySatellite={this.handleDestroySatellite}
                   handleNewAPIKey={this.handleNewAPIKey}
+                  loadingDestroy={this.state.loadingDestroy}
+                  doneDestroy={this.state.doneDestroy}
                 />
               </div>          
             </div>
