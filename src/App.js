@@ -178,25 +178,17 @@ class App extends React.Component {
               currentSatellite: null
             });
           }
-        })
+        });
       }, 2000);
     });
-
-    // fetch
-
-    // this.setState(
-    //   { satellites: updatedSatellites }, 
-    //   () => {
-    //     if (this.state.satellites.length > 0) {
-    //       this.setState({ currentSatellite: this.state.satellites[0].id })
-    //     } else {
-    //       this.setState({ currentSatellite: null });
-    //     }
-    //   });
   };
 
   handleClearDone = () => {
     this.setState({ done: null });
+  };
+
+  handleClearDoneDestroy = () => {
+    this.setState({ doneDestroy: null });
   };
 
   render() { 
@@ -227,8 +219,9 @@ class App extends React.Component {
                   satellite={satellite}
                   handleDestroySatellite={this.handleDestroySatellite}
                   handleNewAPIKey={this.handleNewAPIKey}
-                  loadingDestroy={this.state.loadingDestroy}
-                  doneDestroy={this.state.doneDestroy}
+                  loading={this.state.loadingDestroy}
+                  done={this.state.doneDestroy}
+                  clearDone={this.handleClearDoneDestroy}
                 />
               </div>          
             </div>

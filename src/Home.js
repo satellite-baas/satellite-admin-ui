@@ -104,11 +104,11 @@ class Home extends React.Component {
 
   handleCloseModal = () => {
     this.setState({ show: false });
+    this.props.clearDone();
   };
 
   handleConfirmDestroy = () => {
     this.props.handleDestroySatellite();
-    this.handleCloseModal();
   };
 
   handleShowField = (field) => {
@@ -136,69 +136,98 @@ class Home extends React.Component {
   };
 
   render() { 
-    const { satellite } = this.props;
-    
+    const { satellite, loading, done } = this.props;
+
     return (
       <>
+        <div className={`modal ${this.state.show ? "is-active" : ""}`}>
+          <div className="modal-background">
+            <div id="centered-modal" className="modal-card">
+              <header className="modal-card-head">
+                Destroy Satellite
+              </header>
+              {!loading && !done && (
+                <>
+                  <section className="modal-card-body">
+                    <p className="subtitle">Are you sure you want to destroy this Satellite? This action is irreversible.</p>
+                  </section>
+                  <footer className="modal-card-foot">
+                    <button 
+                      className="button is-danger" 
+                      onClick={this.handleConfirmDestroy}
+                    >Destroy Satellite</button>
+                    <button 
+                      className="button" 
+                      onClick={this.handleCloseModal}
+                    >
+                      Cancel
+                    </button>
+                  </footer>
+                </>
+              )}
+              {loading && (
+                <>
+                  <section className="modal-card-body">
+                    <progress
+                      className="progress is-medium is-danger"
+                    >
+                      15%
+                    </progress>
+                  </section>
+                  <footer className="modal-card-foot"></footer>
+                </>
+              )}
+              {done && (
+                <>
+                  <section className="modal-card-body">
+                    <p className="subtitle">
+                      {done.msg}
+                    </p>
+                  </section>
+                  <footer className="modal-card-foot"></footer>
+                </>
+              )}
+            </div>
+            {!loading && (
+              <button
+                className="modal-close is-large"
+                onClick={this.handleCloseModal}
+              ></button>
+            )}
+          </div>
+        </div>
+        <div className={`modal ${this.state.showAPI ? "is-active" : ""}`}>
+          <div className="modal-background">
+            <div id="centered-modal" className="modal-card">
+              <header className="modal-card-head">
+                New API Key
+              </header>
+              <section className="modal-card-body">
+                <p className="subtitle">Changing the API key requires updating all client applications. Are you sure you want to do this?</p>
+              </section>
+              <footer className="modal-card-foot">
+                <button 
+                  className="button is-danger" 
+                  onClick={this.handleGetNewAPIKey}
+                >Create API Key</button>
+                <button 
+                  className="button" 
+                  onClick={this.handleCloseAPIModal}
+                >
+                  Cancel
+                </button>
+              </footer>
+            </div>
+            <button
+              className="modal-close is-large"
+              onClick={this.handleCloseAPIModal}
+            ></button>
+          </div>
+        </div>
         { satellite ? (
           <>
             <div className="columns is-centered is-multiline">
-              <div className={`modal ${this.state.show ? "is-active" : ""}`}>
-                <div className="modal-background">
-                  <div id="centered-modal" className="modal-card">
-                    <header className="modal-card-head">
-                      Destroy Satellite
-                    </header>
-                    <section className="modal-card-body">
-                      <p className="subtitle">Are you sure you want to destroy this Satellite? This action is irreversible.</p>
-                    </section>
-                    <footer className="modal-card-foot">
-                      <button 
-                        className="button is-danger" 
-                        onClick={this.handleConfirmDestroy}
-                      >Destroy Satellite</button>
-                      <button 
-                        className="button" 
-                        onClick={this.handleCloseModal}
-                      >
-                        Cancel
-                      </button>
-                    </footer>
-                  </div>
-                  <button
-                    className="modal-close is-large"
-                    onClick={this.handleCloseModal}
-                  ></button>
-                </div>
-              </div>
-              <div className={`modal ${this.state.showAPI ? "is-active" : ""}`}>
-                <div className="modal-background">
-                  <div id="centered-modal" className="modal-card">
-                    <header className="modal-card-head">
-                      New API Key
-                    </header>
-                    <section className="modal-card-body">
-                      <p className="subtitle">Changing the API key requires updating all client applications. Are you sure you want to do this?</p>
-                    </section>
-                    <footer className="modal-card-foot">
-                      <button 
-                        className="button is-danger" 
-                        onClick={this.handleGetNewAPIKey}
-                      >Create API Key</button>
-                      <button 
-                        className="button" 
-                        onClick={this.handleCloseAPIModal}
-                      >
-                        Cancel
-                      </button>
-                    </footer>
-                  </div>
-                  <button
-                    className="modal-close is-large"
-                    onClick={this.handleCloseAPIModal}
-                  ></button>
-                </div>
-              </div>
+              
               <div className="column is-three-quarters">
                 <h1 className="title is-2 has-text-left">
                   {satellite.name}

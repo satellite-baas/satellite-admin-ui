@@ -10,7 +10,8 @@ const Main = ({
   handleDestroySatellite, 
   handleNewAPIKey,
   loading,
-  done
+  done,
+  clearDone
 }) => {
   return (
     <div className="main-container">
@@ -37,6 +38,7 @@ const Main = ({
             handleNewAPIKey={handleNewAPIKey}
             loading={loading}
             done={done}
+            clearDone={clearDone}
           />
         </Route>
       </Switch>

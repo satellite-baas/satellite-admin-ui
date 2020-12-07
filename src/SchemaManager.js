@@ -50,6 +50,7 @@ class SchemaManager extends React.Component {
   };
 
   handleSubmitSchema = () => {
+    const context = this;
     const mutation = `
     {
       updateGQLSchema(
@@ -77,19 +78,34 @@ class SchemaManager extends React.Component {
       },
       body: this.state.schema
     })
-    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      return res.json();
+    })
     .then(json => {
+      if (json.errors) {
+        this.setState({
+          notification: {
+            type: 'danger',
+            msg: 'There is an issue with the schema. Could not update.'
+          }
+        });
+      
+        return;
+      } 
+
       this.setState({ notification: {
         type: 'success',
         msg: 'Schema successfully updated.'
       }});
     })
     .catch(err => {
-      this.handleUpdateSchema('# Could not update schema.', () => {
-        this.setState({ notification: {
+      this.handleUpdateSchema('# Could not update schema.');
+      context.setState({ 
+        notification: {
           type: 'danger',
-          msg: 'Could not update schema.'
-        }});
+          msg: 'Could not update schema due to connection error.'
+        }
       });
     });
   };
