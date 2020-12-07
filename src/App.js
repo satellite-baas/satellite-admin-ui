@@ -135,18 +135,64 @@ class App extends React.Component {
   handleDestroySatellite = () => {
     // fetch POST to controller to tear down satellite
 
-    const updatedSatellites = this.state.satellites.filter(satellite => satellite.id !== this.state.currentSatellite);
     const context = this;
 
-    this.setState(
-      { satellites: updatedSatellites }, 
-      () => {
-        if (this.state.satellites.length > 0) {
-          this.setState({ currentSatellite: this.state.satellites[0].id })
-        } else {
-          this.setState({ currentSatellite: null });
+    this.setState({ 
+      loadingDestroy: true 
+    }, () => {
+      setTimeout(() => {
+        // fetch, check res status code
+
+        let res = {
+          status: 200
+        };
+
+        if (res.status !== 200) {
+          context.setState({
+            loadingDestroy: false,
+            doneDestroy: {
+              type: 'danger',
+              msg: 'Satellite could not be destroyed.'
+            }
+          });
+
+          return;
         }
-      });
+
+        const updatedSatellites = this.state.satellites.filter(satellite => satellite.id !== this.state.currentSatellite);
+
+        context.setState({ 
+          loadingDestroy: false,
+          doneDestroy: {
+            type: 'success',
+            msg: "Satellite successfully destroyed."
+          },
+          satellites: updatedSatellites
+        }, () => {
+          if (context.state.satellites.length > 0) {
+            context.setState({
+              currentSatellite: context.state.satellites[0]
+            });
+          } else {
+            context.setState({
+              currentSatellite: null
+            });
+          }
+        })
+      }, 2000);
+    });
+
+    // fetch
+
+    // this.setState(
+    //   { satellites: updatedSatellites }, 
+    //   () => {
+    //     if (this.state.satellites.length > 0) {
+    //       this.setState({ currentSatellite: this.state.satellites[0].id })
+    //     } else {
+    //       this.setState({ currentSatellite: null });
+    //     }
+    //   });
   };
 
   handleClearDone = () => {
