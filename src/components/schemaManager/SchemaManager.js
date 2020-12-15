@@ -5,6 +5,8 @@ import 'codemirror/addon/lint/lint';
 import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
+import axios from 'axios';
+import FileForm from '../fileManager/FileForm';
 
 class SchemaManager extends React.Component {
   constructor(props) {
@@ -12,13 +14,21 @@ class SchemaManager extends React.Component {
 
     this.state = {
       schema: '# Loading schema...',
-      notification: null
+      notification: null,
+      file: null
     };
   }
 
   componentDidMount() {
-    // retrieve actual schema from Dgraph
-    const context = this;
+    if (this.props.satellite) {      
+      this.handleGetSchema();
+      return;
+    }
+
+    this.handleUpdateSchema('# Create a backend to upload schema.');
+  }
+
+  handleGetSchema = () => {
     const query = `
       {
         getGQLSchema {
@@ -27,30 +37,37 @@ class SchemaManager extends React.Component {
       }
     `;
 
-    fetch(`http://localhost:3030/admin`, {
-      method: 'POST',
-      headers: { 
-       'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query })
+    axios.post(`${this.props.origin}/admin/${this.props.satellite.id}`, {
+      data: { query },
+      withCredentials: true
     })
     .then(res => res.json())
     .then(json => {
-      setTimeout(() => {
-        context.handleUpdateSchema(json.data.getGQLSchema.schema);
-      }, 1000);
+      console.log(json);
+      this.handleUpdateSchema(json.data.getGQLSchema.schema);
     })
     .catch(err => {
-      context.handleUpdateSchema('# Could not load schema from backend.');
+      console.log(err);
+      this.handleUpdateSchema('# Could not load schema from backend.');
     });
-  }
+  };
 
   handleUpdateSchema = (schema) => {
     this.setState({ schema });
   };
 
   handleSubmitSchema = () => {
-    const context = this;
+    if (!this.props.satellite) {
+      this.setState({
+        notification: {
+          type: 'danger',
+          msg: 'Cannot update schema of non-existent backend.'
+        }
+      });
+
+      return;
+    }
+
     const mutation = `
     {
       updateGQLSchema(
@@ -64,55 +81,99 @@ class SchemaManager extends React.Component {
     }
     `;
 
+    const context = this;
+    const data = new FormData();
+    const fileInput = document.querySelector('#file_upload');
+
+    data.append('file', fileInput.files[0]);
+    data.append('id', this.props.satellite.id);
+    
     this.setState({
       notification: {
         type: 'light',
         msg: 'Updating schema...'
       }
-    });
+    }, () => {
+      axios.post(`${this.props.origin}/admin/schema`, {
+        data,
+        withCredentials: true,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      .then(res => {
+        console.log(res);
+        if (res.status === 201) {
+          this.setState({ 
+            notification: {
+              type: 'success',
+              msg: 'Schema successfully updated.'
+            },
 
-    fetch(`http://localhost:3030/admin/schema`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-binary'
-      },
-      body: this.state.schema
-    })
-    .then(res => {
-      return res.json();
-    })
-    .then(json => {
-      if (json.errors) {
-        this.setState({
+            file: null
+          });
+
+          this.handleGetSchema();
+          return;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.handleUpdateSchema('# Could not update schema.');
+        this.setState({ 
+          file: null,
           notification: {
             type: 'danger',
-            msg: 'There is an issue with the schema. Could not update.'
+            msg: 'Could not update schema due to connection error.'
           }
         });
-      
-        return;
-      } 
-
-      this.setState({ notification: {
-        type: 'success',
-        msg: 'Schema successfully updated.'
-      }});
-    })
-    .catch(err => {
-      this.handleUpdateSchema('# Could not update schema.');
-      context.setState({ 
-        notification: {
-          type: 'danger',
-          msg: 'Could not update schema due to connection error.'
-        }
       });
     });
+
+    // fetch(`http://localhost:3030/admin/schema`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/x-binary'
+    //   },
+    //   body: this.state.schema
+    // })
+    // .then(res => {
+    //   return res.json();
+    // })
+    // .then(json => {
+    //   if (json.errors) {
+    //     this.setState({
+    //       notification: {
+    //         type: 'danger',
+    //         msg: 'There is an issue with the schema. Could not update.'
+    //       }
+    //     });
+      
+    //     return;
+    //   } 
+
+    //   this.setState({ notification: {
+    //     type: 'success',
+    //     msg: 'Schema successfully updated.'
+    //   }});
+    // })
+    // .catch(err => {
+    //   this.handleUpdateSchema('# Could not update schema.');
+    //   context.setState({ 
+    //     notification: {
+    //       type: 'danger',
+    //       msg: 'Could not update schema due to connection error.'
+    //     }
+    //   });
+    // });
   };
 
   handleCloseDelete = () => {
     this.setState({ notification: null });
   };
 
+  handleFileChange = (e) => {
+    this.setState({ file: e.target.files[0] });
+  };
+  
   render() {
     return (
       <div style={{ textAlign: 'left' }}>
@@ -134,12 +195,35 @@ class SchemaManager extends React.Component {
             }}
             onChange={(editor, data, value) => this.handleUpdateSchema(value)}
           />
-          <button
-            className="button is-info is-fullwidth mt-2"
-            onClick={this.handleSubmitSchema}
-          >
-            Deploy
-          </button>
+          <div className="mt-3">
+            <div className="file mb-2">
+              <label className="file-label">
+                <input 
+                  className="file-input"
+                  id="file_upload"
+                  type="file"
+                  onChange={this.handleFileChange}
+                />
+                <span className="file-cta">
+                  <span className="file-icon">
+                    <i className="fas fa-upload"></i>
+                  </span>
+                  <span className="file-label">
+                    Choose a file...
+                  </span>
+                </span>
+                <span className={`${this.state.file ? 'is-active' : 'is-hidden'} file-name`}>
+                  {this.state.file && this.state.file.name}
+                </span>
+              </label>
+              <button
+                className="button is-info ml-2"
+                onClick={this.handleSubmitSchema}
+              >
+                Update Schema
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

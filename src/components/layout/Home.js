@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 
 const iconSpanStyle = {
@@ -21,6 +22,10 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.props.satellite) {
+      return;
+    }
+
     this.healthCheck();
 
     const intervalID = setInterval(() => {
@@ -46,8 +51,8 @@ class Home extends React.Component {
       }
     `;
 
-    fetch(`http://localhost:3030/health`, {
-      method: 'GET'
+    axios.get(`${this.props.origin}/health/${this.props.satellite.id}`, {
+      withCredentials: true
     })
     .then(res => {
       context.setState({
@@ -196,34 +201,6 @@ class Home extends React.Component {
             )}
           </div>
         </div>
-        <div className={`modal ${this.state.showAPI ? "is-active" : ""}`}>
-          <div className="modal-background">
-            <div id="centered-modal" className="modal-card">
-              <header className="modal-card-head">
-                New API Key
-              </header>
-              <section className="modal-card-body">
-                <p className="subtitle">Changing the API key requires updating all client applications. Are you sure you want to do this?</p>
-              </section>
-              <footer className="modal-card-foot">
-                <button 
-                  className="button is-danger" 
-                  onClick={this.handleGetNewAPIKey}
-                >Create API Key</button>
-                <button 
-                  className="button" 
-                  onClick={this.handleCloseAPIModal}
-                >
-                  Cancel
-                </button>
-              </footer>
-            </div>
-            <button
-              className="modal-close is-large"
-              onClick={this.handleCloseAPIModal}
-            ></button>
-          </div>
-        </div>
         { satellite ? (
           <>
             <div className="columns is-centered is-multiline">
@@ -260,7 +237,7 @@ class Home extends React.Component {
                   </div>
                   <div className={this.state.endpointVisible ? 'is-active' : 'is-hidden'}>
                     <p className="subtitle is-5 mt-4">
-                      {satellite.endpoint}
+                      {satellite.name}
                       <span className="icon is-small ml-3">
                         <i className="far fa-copy clicky"></i>
                       </span>

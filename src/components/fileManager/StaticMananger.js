@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import FileForm from './FileForm';
 
@@ -20,22 +21,36 @@ class StaticManager extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:3030/files`)
-    .then(res => { 
-      return res.json();
-    })
-    .then(json => {
-      this.setState({
-        files: json
+    if (this.props.satellite) {
+      axios.get(`${this.props.origin}/files/${this.props.satellite.id}`)
+      .then(res => { 
+        console.log(res);
+        return res.json();
+      })
+      .then(json => {
+        console.log(json);
+        this.setState({
+          files: json
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          done: {
+            type: 'danger',
+            msg: 'Could not fetch files. Contact an administrator.'
+          }
+        });
       });
-    })
-    .catch(err => {
-      this.setState({
-        done: {
-          type: 'danger',
-          msg: 'Could not fetch files. Contact an administrator.'
-        }
-      });
+
+      return;
+    }
+
+    this.setState({
+      done: {
+        type: 'danger',
+        msg: 'No files to fetch for non-existent backend.'
+      }
     });
   }
 
@@ -65,8 +80,6 @@ class StaticManager extends React.Component {
     this.setState({
       showUpload: true
     });
-
-
   };
 
   handleUpload = (file) => {
@@ -75,18 +88,24 @@ class StaticManager extends React.Component {
     const fileInput = document.querySelector('#file_upload');
 
     data.append('file', fileInput.files[0]);
-
-    fetch(`http://localhost:3030/upload`, {
-      method: 'POST',
-      body: data
+    data.append('id', this.props.currentSatellite);
+    
+    axios.post(`${this.props.origin}/upload`, {
+      withCredentials: true,
+      data,
+      headers: { 'Content-Type': 'multipart/form-data' }
     })
     .then(res => {
+      console.log(res);
+
       const newFile = {
         name: file.name,
         modified: new Date(),
         size: file.size
       };
+
       console.log(newFile)
+
       this.setState({
         files: context.state.files.concat(newFile)
       }, () => {
@@ -101,7 +120,9 @@ class StaticManager extends React.Component {
       });
     })
     .catch(err => {
-      context.setState({
+      console.log(err);
+
+      this.setState({
         loading: false,
         showUpload: false,
         done: {
@@ -110,6 +131,41 @@ class StaticManager extends React.Component {
         }
       });
     });
+
+    // fetch(`http://localhost:3030/upload`, {
+    //   method: 'POST',
+    //   body: data
+    // })
+    // .then(res => {
+    //   const newFile = {
+    //     name: file.name,
+    //     modified: new Date(),
+    //     size: file.size
+    //   };
+    //   console.log(newFile)
+    //   this.setState({
+    //     files: context.state.files.concat(newFile)
+    //   }, () => {
+    //     context.setState({
+    //       loading: false,
+    //       showUpload: false,
+    //       done: {
+    //         type: 'success',
+    //         msg: 'File uploaded successfully.'
+    //       }
+    //     });
+    //   });
+    // })
+    // .catch(err => {
+    //   context.setState({
+    //     loading: false,
+    //     showUpload: false,
+    //     done: {
+    //       type: 'danger',
+    //       msg: 'Could not upload file. Make sure it is under 1GB.'
+    //     }
+    //   });
+    // });
   };
 
   handleUploadDone = () => {
@@ -135,15 +191,13 @@ class StaticManager extends React.Component {
   handleConfirmDelete = () => {
     const context = this;
 
-    fetch(`http://localhost:3030/file`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ fileName: this.state.selectedFile })
+    axios.delete(`${this.state.origin}/file`, {
+      data: { fileName: this.state.selectedFile }
     })
     .then(res => {
-      context.setState({
+      console.log(res);
+
+      this.setState({
         files: context.state.files.filter(file => file.name !== context.state.selectedFile)
       }, () => {
         context.setState({
@@ -157,7 +211,9 @@ class StaticManager extends React.Component {
       });
     })
     .catch(err => {
-      context.setState({
+      console.log(err);
+
+      this.setState({
         done: {
           type: 'danger',
           msg: 'Could not delete the selected file.'
@@ -166,6 +222,38 @@ class StaticManager extends React.Component {
         selectedFile: null
       });
     });
+
+    // fetch(`http://localhost:3030/file`, {
+    //   method: 'DELETE',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({ fileName: this.state.selectedFile })
+    // })
+    // .then(res => {
+    //   context.setState({
+    //     files: context.state.files.filter(file => file.name !== context.state.selectedFile)
+    //   }, () => {
+    //     context.setState({
+    //       done: {
+    //         type: 'success',
+    //         msg: 'File successfully deleted.'
+    //       },
+    //       show: false,
+    //       selectedFile: null
+    //     });
+    //   });
+    // })
+    // .catch(err => {
+    //   context.setState({
+    //     done: {
+    //       type: 'danger',
+    //       msg: 'Could not delete the selected file.'
+    //     },
+    //     show: false,
+    //     selectedFile: null
+    //   });
+    // });
   };
 
   render() { 

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MIN_PASSWORD_LENGTH, MIN_EMAIL_LENGTH } from '../../constants/authConstants';
@@ -34,29 +35,44 @@ const Login = ({
       email,
       password
     };
-
-    fetch(`${origin}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(params)
+    
+    axios.post(`${origin}/login`, {
+      data: params,
+      withCredentials: true
     })
     .then(res => {
+      console.log(res);
+
       if (res.status >= 400) {
         handleUpdateMessage('Could not login.', false);
         return;
       }
 
-      onLogin();
+      onLogin();      
     })
     .catch(err => {
+      console.log(err);
       handleUpdateMessage('Could not perform login. Check with administrator.', false);
     });
-    
-    // if bad, render error
 
-    // handleUpdateMessage('Incorrect credentials.', false);
+    // fetch(`${origin}/login`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(params)
+    // })
+    // .then(res => {
+    //   if (res.status >= 400) {
+    //     handleUpdateMessage('Could not login.', false);
+    //     return;
+    //   }
+
+    //   onLogin();
+    // })
+    // .catch(err => {
+    //   handleUpdateMessage('Could not perform login. Check with administrator.', false);
+    // });
   };
 
   return (

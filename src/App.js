@@ -40,12 +40,12 @@ class App extends React.Component {
     this.state = {
       currentSatellite: null,
       satellites: [],
-      isLoggedIn: false,
+      isLoggedIn: true,
       loading: false,
       done: null,
       loadingDestroy: false,
       doneDestroy: null,
-      origin: 'http://admin.ilyaskussainov.com',
+      origin: window.location.origin,
       login: true
     };
   }
@@ -56,87 +56,51 @@ class App extends React.Component {
         withCredentials: true
       }
     )
-    .then(res => { 
-      console.log(res)
-      res.json()
+    .then(res => {
+      return res.json();
     })
     .then(json => {
-      console.log(json)
+      this.setState({
+        satellites: json.backends
+      });
+
+      return;
     })
     .catch(err => {
-      console.log(err)
+      this.setState({
+        satellites: [],
+        currentSatellite: null
+      });
+
+      return;
     });
-
-    // for now we'll use static state
-    // fetch(`${this.state.origin}/backends`,{
-    //   credentials: 'include'
-    // })
-    // .then(res => {
-    //   console.log(res);
-    //   return res.json();
-    // })
-    // .then(json => {
-    //   if (json.status >= 401) {
-    //     return;
-    //   }
-
-    //   console.log(json)
-    //   // object with key backends, array value
-    //   this.setState({
-    //     satellites:  json.backends,
-    //     currentSatellite: json.backends[0] || null
-    //   });
-    // })
-    // .catch(err => {
-    //   // do something
-    // });
-    // this.setState({
-    //   satellites: [],
-    //   currentSatellite: null
-    // });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('yes')
     if (prevState.isLoggedIn !== this.state.isLoggedIn) {
-      console.log('in')
       axios.get(
         `${this.state.origin}/backends`, {
           withCredentials: true
         }
       )
-      .then(res => { 
-        console.log(res)
-        res.json()
+      .then(res => {
+        return res.json();
       })
       .then(json => {
-        console.log(json)
+        this.setState({
+          satellites: json.backends
+        });
+  
+        return;
       })
       .catch(err => {
-        console.log(err)
+        this.setState({
+          satellites: [],
+          currentSatellite: null
+        });
+  
+        return;
       });
-      // fetch(`${this.state.origin}/backends`, {
-      //   credentials: "include"
-      // })
-      // .then(res => {
-      //   console.log(res);
-      //   return res.json();
-      // })
-      // .then(json => {
-      //   if (json.status >= 401) {
-      //     return;
-      //   }
-
-      //   console.log(json)
-      //   // object with key backends, array value
-      //   this.setState({
-      //     satellites:  json.backends,
-      //     currentSatellite: json.backends[0] || null
-      //   });
-      // })
-      // .catch(err => {
-      //   // do something
-      // });   
     }
   }
 
@@ -157,7 +121,6 @@ class App extends React.Component {
     })
     .catch(err => {
       this.setState({ isLoggedIn: false });
-      // come back to this later
     });
   };
 
@@ -171,81 +134,110 @@ class App extends React.Component {
 
   handleNewSatellite = (name) => {
     const context = this;
-    const newSat = {
-      id: 3,
-      name,
-      endpoint: 'random.localhost.com',
-      apiKey: uuidv4(),
-      files: false
-    };
 
-    // fetch POST to controller with new satellite
+    this.setState({ loading: true }, () => {
+      axios.post(`${this.state.origin}/backend`, {
+        withCredentials: true,
+        data: { name }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
 
-    this.setState({ loading: true });
-      setTimeout(() => {
-        context.setState({
-          loading: false,
-          satellites: context.state.satellites.concat(newSat),
-          done: {
-            type: 'success',
-            msg: 'Satellite successfully launched.'
-          }
-        }, () => {
-          context.setState({ 
- 
-          });
-        })
-      }, 2000);
-  };
-
-  handleDestroySatellite = () => {
-    // fetch POST to controller to tear down satellite
-
-    const context = this;
-
-    this.setState({ 
-      loadingDestroy: true 
-    }, () => {
-      setTimeout(() => {
-        // fetch, check res status code
-
-        let res = {
-          status: 200
-        };
-
-        if (res.status !== 200) {
+        if (json.message !== `Backend ${name} created!`) {
           context.setState({
-            loadingDestroy: false,
-            doneDestroy: {
+            loading: false,
+            satellites: context.state.satellites.concat(json.backend),
+            done: {
               type: 'danger',
-              msg: 'Satellite could not be destroyed.'
+              msg: 'Satellite could not be launched. Contact administrator.'
             }
           });
 
           return;
         }
 
-        const updatedSatellites = this.state.satellites.filter(satellite => satellite.id !== this.state.currentSatellite);
-
-        context.setState({ 
-          loadingDestroy: false,
-          doneDestroy: {
+        context.setState({
+          loading: false,
+          satellites: context.state.satellites.concat(json.backend),
+          done: {
             type: 'success',
-            msg: "Satellite successfully destroyed."
-          },
-          satellites: updatedSatellites
-        }, () => {
-          if (context.state.satellites.length > 0) {
-            context.setState({
-              currentSatellite: context.state.satellites[0]
-            });
-          } else {
-            context.setState({
-              currentSatellite: null
-            });
+            msg: 'Satellite successfully launched.'
           }
         });
-      }, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+        context.setState({
+          loading: false,
+          done: {
+            type: 'danger',
+            msg: 'Satellite could not be launched. Contact administrator.'
+          }
+        });
+      });
+    });
+  };
+
+  handleDestroySatellite = () => {
+    const context = this;
+    const currentName = this.getCurrentSatellite().name;
+
+    this.setState({ 
+      loadingDestroy: true 
+    }, () => {
+      axios.delete(`${context.state.origin}/backend`, {
+        withCredentials: true,
+        data: { id: context.state.currentSatellite }
+      })
+      .then(res => {
+        console.log(res);
+
+        if (res.status === 201) {
+          context.setState({
+            loadingDestroy: false,
+            doneDestroy: {
+              type: 'success',
+              msg: 'Satellite successfully destroyed.'
+            }
+          });
+
+          context.setState({
+            satellites: context.state.satellites.filter(sat => sat.name !== currentName)
+          }, () => {
+            if (context.state.satellites.length > 0) {
+              context.setState({
+                currentSatellite: context.state.satellites[0]
+              });
+            } else {
+              context.setState({
+                currentSatellite: null
+              });
+            }
+          });
+
+          return;
+        }
+
+        context.setState({
+          loadingDestroy: false,
+          doneDestroy: {
+            type: 'danger',
+            msg: 'Satellite could not be destroyed.'
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+
+        context.setState({
+          loadingDestroy: false,
+          doneDestroy: {
+            type: 'danger',
+            msg: 'Satellite could not be destroyed.'
+          }
+        });
+      });
     });
   };
 
@@ -301,6 +293,7 @@ class App extends React.Component {
               loadingDestroy={this.state.loadingDestroy}
               doneDestroy={this.state.doneDestroy}
               clearDone={this.handleClearDoneDestroy}
+              origin={this.state.origin}
             />
           </Switch>
         </Router>

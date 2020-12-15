@@ -8,7 +8,8 @@ const Header = ({
   handleNewSatellite,
   handleClearDone,
   loading,
-  done
+  done,
+  origin
 }) => {
   const [selectedSatellite, setSelectedSatellite] = useState(currentSatellite);
   const [newName, setNewName] = useState('');

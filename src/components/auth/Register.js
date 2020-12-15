@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MIN_PASSWORD_LENGTH, EMAIL_REGEXP } from '../../constants/authConstants';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = ({ 
   onSignup, 
@@ -59,16 +60,17 @@ const Register = ({
       email, 
       password
     };
-    
-    fetch(`${origin}/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(params)
+
+    axios.post(`${origin}/signup`, {
+      data: params,
+      withCredentials: true
     })
-    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      return res.json();
+    })
     .then(json => {
+      console.log(json);
       if (json.error) {
         handleUpdateMessage(json.error, false);
         return;
@@ -78,11 +80,36 @@ const Register = ({
       
       setTimeout(() => {
         onSignup();
-      }, 1000);
+      }, 1000);      
     })
     .catch(err => {
       console.log(err);
+      handleUpdateMessage('Could not perform signup. Check with administrator.', false);
     });
+
+    // fetch(`${origin}/signup`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(params)
+    // })
+    // .then(res => res.json())
+    // .then(json => {
+    //   if (json.error) {
+    //     handleUpdateMessage(json.error, false);
+    //     return;
+    //   }
+
+    //   handleUpdateMessage('Successfully registered.', true);
+      
+    //   setTimeout(() => {
+    //     onSignup();
+    //   }, 1000);
+    // })
+    // .catch(err => {
+    //   console.log(err);
+    // });
 
     // check params for validity
 

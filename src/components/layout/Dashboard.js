@@ -16,7 +16,8 @@ const Dashboard = ({
   loadingDestroy,
   doneDestroy,
   clearDone,
-  satellite
+  satellite,
+  origin
 }) => {
   return (
     <>
@@ -29,6 +30,7 @@ const Dashboard = ({
         handleClearDone={handleClearDone}
         loading={loading}
         done={done}
+        origin={origin}
       />
       <div className="columns is-fullheight is-gapless">
         <Navbar />         
@@ -38,6 +40,7 @@ const Dashboard = ({
           loading={loadingDestroy}
           done={doneDestroy}
           clearDone={clearDone}
+          origin={origin}
         />        
       </div>
     </>

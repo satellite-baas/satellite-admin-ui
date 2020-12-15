@@ -11,7 +11,8 @@ const Main = ({
   handleNewAPIKey,
   loading,
   done,
-  clearDone
+  clearDone,
+  origin
 }) => {
   return (
     <div className="column is-four-fifths">
@@ -20,16 +21,19 @@ const Main = ({
           <Route path="/files">
             <StaticManager 
               satellite={satellite}
+              origin={origin}
             />
           </Route>
           <Route path="/schema">
             <SchemaManager 
               satellite={satellite}
+              origin={origin}
             />
           </Route>
           <Route path="/explorer">
             <SchemaExplorer 
               satellite={satellite}
+              origin={origin}
             />
           </Route>
           <Route path="/">
@@ -40,6 +44,7 @@ const Main = ({
               loading={loading}
               done={done}
               clearDone={clearDone}
+              origin={origin}
             />
           </Route>
         </Switch>
