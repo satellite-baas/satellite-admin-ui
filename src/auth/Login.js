@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Notification from './Notification';
+import { MIN_PASSWORD_LENGTH, MIN_EMAIL_LENGTH } from '../constants/authConstants';
 
 const Login = ({ 
   onLogin,  
@@ -18,7 +18,18 @@ const Login = ({
     setPassword(e.target.value);
   };
 
+  const isInvalid = () => {
+    if (email.length < MIN_EMAIL_LENGTH || password.length < MIN_PASSWORD_LENGTH) {
+      handleUpdateMessage('Invalid credentials. Could not send request.', false);
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSubmit = () => {
+    if (isInvalid()) return;
+
     const params = {
       email,
       password
@@ -60,7 +71,7 @@ const Login = ({
             type="text"
           />
           <span className="icon is-small is-left">
-            <i className="fas fa-email"></i>
+            <i className="fas fa-envelope"></i>
           </span>
         </div>
 

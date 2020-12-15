@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Notification from './Notification';
+import { MIN_PASSWORD_LENGTH, EMAIL_REGEXP } from '../constants/authConstants';
 import { Link } from 'react-router-dom';
 
 const Register = ({ 
@@ -23,14 +23,43 @@ const Register = ({
     setPasswordConfirmation(e.target.value);
   };
 
+  const validEmail = () => {
+    return EMAIL_REGEXP.test(email.toLowerCase());
+  };
+
+  const isInvalid = () => {
+    if (password.trim().length < password.length || email.trim().length < email.length) {
+      handleUpdateMessage('Credentials can not contain spaces.', false);
+      return true;
+    }
+
+    if (password !== passwordConfirmation) {
+      handleUpdateMessage('Passwords do not match.', false);
+      return true;
+    }
+
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      handleUpdateMessage('Password must be at least 8 characters.', false);
+      return true; 
+    }
+
+    if (!validEmail()) {
+      handleUpdateMessage('Invalid email.', false);
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSubmit = () => {
+    if (isInvalid()) return;
+
     // actual value will be window location origin
     const params = {
       email, 
       password
     };
     
-    console.log(`${origin}/signup`)
     fetch(`${origin}/signup`, {
       method: 'POST',
       headers: {
@@ -56,20 +85,7 @@ const Register = ({
     });
 
     // check params for validity
-    // if (password.trim().length < password.length || username.trim().length < username.length) {
-    //   handleUpdateMessage('Credentials can not contain spaces.', false);
-    //   return;
-    // }
 
-    // if (password !== passwordConfirmation) {
-    //   handleUpdateMessage('Passwords do not match.', false);
-    //   return;
-    // }
-
-    // if (password.length < 8) {
-    //   handleUpdateMessage('Password must be at least 8 characters.', false);
-    //   return; 
-    // }
 
     // // make fetch to controller to determine authenticity
     // const payload = {
@@ -99,7 +115,7 @@ const Register = ({
             type="text"
           />
           <span className="icon is-small is-left">
-            <i className="fas fa-user"></i>
+            <i className="fas fa-envelope"></i>
           </span>
         </div>
 
