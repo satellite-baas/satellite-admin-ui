@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Notification = ({ message, success, removeNotification }) => {
-  const [showDelete, setShowDelete] = useState(true);
+  const [showDelete] = useState(true);
 
   const handleDeleteClose = () => {
     removeNotification();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MIN_PASSWORD_LENGTH, MIN_EMAIL_LENGTH } from '../constants/authConstants';
+import { MIN_PASSWORD_LENGTH, MIN_EMAIL_LENGTH } from '../../constants/authConstants';
 
 const Login = ({ 
   onLogin,  

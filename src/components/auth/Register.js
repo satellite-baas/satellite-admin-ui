@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MIN_PASSWORD_LENGTH, EMAIL_REGEXP } from '../constants/authConstants';
+import { MIN_PASSWORD_LENGTH, EMAIL_REGEXP } from '../../constants/authConstants';
 import { Link } from 'react-router-dom';
 
 const Register = ({ 

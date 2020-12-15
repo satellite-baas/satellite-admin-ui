@@ -1,34 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-import Authentication from './auth/Authentication';
-import PublicRoute from './routes/PublicRoute';
-import ProtectedRoute from './routes/ProtectedRoute';
-import Dashboard from './layout/Dashboard';
+import Authentication from './components/auth/Authentication';
+import PublicRoute from './components/routes/PublicRoute';
+import ProtectedRoute from './components/routes/ProtectedRoute';
+import Dashboard from './components/layout/Dashboard';
 
 import './css/App.css';
 import 'bulma/css/bulma.css';
 
 // state for schema, and api keys
 
-const satellites = [{
-  id: 1,
-  name: 'Todo App',
-  domain: 'todoapp',
-  endpoint: 'todoapp.localhost.com',
-  apiKey: uuidv4(),
-  files: true
-}, {
-  id: 2,
-  name: 'Shopping Cart',
-  domain: 'shoppingcart',
-  endpoint: 'shoppingcart.localhost.com',
-  apiKey: uuidv4(),
-  files: false
-}];
+// const satellites = [{
+//   id: 1,
+//   name: 'Todo App',
+//   domain: 'todoapp',
+//   endpoint: 'todoapp.localhost.com',
+//   apiKey: uuidv4(),
+//   files: true
+// }, {
+//   id: 2,
+//   name: 'Shopping Cart',
+//   domain: 'shoppingcart',
+//   endpoint: 'shoppingcart.localhost.com',
+//   apiKey: uuidv4(),
+//   files: false
+// }];
 
 // schema is fetched on route load of schema
 // keys are fetched on route load of api
@@ -98,7 +98,7 @@ class App extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     console.log('yes')
-    if (prevState.isLoggedIn != this.state.isLoggedIn) {
+    if (prevState.isLoggedIn !== this.state.isLoggedIn) {
       console.log('in')
       axios.get(
         `${this.state.origin}/backends`, {

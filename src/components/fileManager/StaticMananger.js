@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FileForm from './FileForm';
 
 const condenseName = (name) => {

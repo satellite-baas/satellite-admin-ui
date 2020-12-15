@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
