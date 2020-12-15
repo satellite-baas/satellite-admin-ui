@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import Notification from './Notification';
+import { Link } from 'react-router-dom';
 
-const Register = ({ handleChooseLogin, handleUpdateMessage }) => {
-  const [username, setUsername] = useState('');
+const Register = ({ 
+  onSignup, 
+  handleUpdateMessage, 
+  origin
+}) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -19,32 +24,62 @@ const Register = ({ handleChooseLogin, handleUpdateMessage }) => {
   };
 
   const handleSubmit = () => {
-    // check params for validity
-    if (password.trim().length < password.length || username.trim().length < username.length) {
-      handleUpdateMessage('Credentials can not contain spaces.', false);
-      return;
-    }
-
-    if (password !== passwordConfirmation) {
-      handleUpdateMessage('Passwords do not match.', false);
-      return;
-    }
-
-    if (password.length < 8) {
-      handleUpdateMessage('Password must be at least 8 characters.', false);
-      return; 
-    }
-
-    // make fetch to controller to determine authenticity
-    const payload = {
-      username,
-      password,
-      passwordConfirmation
+    // actual value will be window location origin
+    const params = {
+      email, 
+      password
     };
+    
+    console.log(`${origin}/signup`)
+    fetch(`${origin}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    })
+    .then(res => res.json())
+    .then(json => {
+      if (json.error) {
+        handleUpdateMessage(json.error, false);
+        return;
+      }
+
+      handleUpdateMessage('Successfully registered.', true);
+      
+      setTimeout(() => {
+        onSignup();
+      }, 1000);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+    // check params for validity
+    // if (password.trim().length < password.length || username.trim().length < username.length) {
+    //   handleUpdateMessage('Credentials can not contain spaces.', false);
+    //   return;
+    // }
+
+    // if (password !== passwordConfirmation) {
+    //   handleUpdateMessage('Passwords do not match.', false);
+    //   return;
+    // }
+
+    // if (password.length < 8) {
+    //   handleUpdateMessage('Password must be at least 8 characters.', false);
+    //   return; 
+    // }
+
+    // // make fetch to controller to determine authenticity
+    // const payload = {
+    //   username,
+    //   password,
+    //   passwordConfirmation
+    // };
 
     // if good, go to Login and set success notification
-    handleUpdateMessage('Successfully registered.', true);
-    handleChooseLogin();
+    
     
 
     // if bad, render error
@@ -55,12 +90,12 @@ const Register = ({ handleChooseLogin, handleUpdateMessage }) => {
   return (
     <>
       <div className="field">
-        <label className="label">Username</label>
+        <label className="label">Email</label>
         <div className="control has-icons-left">
           <input 
             className="input" 
-            value={username}
-            onChange={handleUsernameChange}
+            value={email}
+            onChange={handleEmailChange}
             type="text"
           />
           <span className="icon is-small is-left">
@@ -107,12 +142,11 @@ const Register = ({ handleChooseLogin, handleUpdateMessage }) => {
           </button>
         </div>
       </div>
-      <a 
-        href="#"
-        onClick={handleChooseLogin}
+      <Link
+        to="/login"
       >
         Already have an account? Login instead.
-      </a>    
+      </Link>  
     </>
   );
 };

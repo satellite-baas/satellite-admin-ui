@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Notification from './Notification';
 
-const Login = ({ handleUserId, handleChooseRegister, handleUpdateMessage }) => {
-  const [username, setUsername] = useState('');
+const Login = ({ 
+  onLogin,  
+  handleUpdateMessage, 
+  origin }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -14,19 +18,30 @@ const Login = ({ handleUserId, handleChooseRegister, handleUpdateMessage }) => {
   };
 
   const handleSubmit = () => {
-    // make fetch to controller to determine authenticity
-    const payload = {
-      username,
+    const params = {
+      email,
       password
     };
 
-    // if good, setUserId
-    const user = {
-      id: 1,
-      username
-    };
+    // console.log(origin)
+    fetch(`${origin}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    })
+    .then(res => {
+      if (res.status >= 400) {
+        handleUpdateMessage('Could not login.', false);
+        return;
+      }
 
-    handleUserId(1); // automatically rerenders router
+      onLogin();
+    })
+    .catch(err => {
+      handleUpdateMessage('Could not perform login. Check with administrator.', false);
+    });
     
     // if bad, render error
 
@@ -36,16 +51,16 @@ const Login = ({ handleUserId, handleChooseRegister, handleUpdateMessage }) => {
   return (
     <>
       <div className="field">
-        <label className="label">Username</label>
+        <label className="label">Email</label>
         <div className="control has-icons-left">
           <input 
             className="input" 
-            value={username}
-            onChange={handleUsernameChange}
+            value={email}
+            onChange={handleEmailChange}
             type="text"
           />
           <span className="icon is-small is-left">
-            <i className="fas fa-user"></i>
+            <i className="fas fa-email"></i>
           </span>
         </div>
 
@@ -74,12 +89,11 @@ const Login = ({ handleUserId, handleChooseRegister, handleUpdateMessage }) => {
           </button>
         </div>
       </div>
-      <a 
-        href="#"
-        onClick={handleChooseRegister}
+      <Link
+        to="/register"
       >
         Don't have an account? Register instead.
-      </a>
+      </Link>
     </>
   );
 };

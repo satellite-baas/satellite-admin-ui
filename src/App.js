@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import {
-  BrowserRouter as Router
+  BrowserRouter as Router, Switch
 } from "react-router-dom";
 
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+
 import Navbar from "./Navbar";
 import Header from './Header';
 import Main from './Main';
 import Authentication from './Authentication';
+import PublicRoute from './PublicRoute';
+import ProtectedRoute from './ProtectedRoute';
+import Dashboard from './Dashboard';
 
 import './App.css';
 import 'bulma/css/bulma.css';
@@ -52,11 +57,13 @@ class App extends React.Component {
     this.state = {
       currentSatellite: null,
       satellites: [],
-      userId: null,
+      isLoggedIn: false,
       loading: false,
       done: null,
       loadingDestroy: false,
-      doneDestroy: null
+      doneDestroy: null,
+      origin: 'http://admin.ilyaskussainov.com',
+      login: true
     };
   }
 
@@ -66,16 +73,97 @@ class App extends React.Component {
 
     // set current satellite to the first
     // set satellites to the returned array
+    axios.get(
+      `${this.state.origin}/backends`, {
+        withCredentials: true
+      }
+    )
+    .then(res => { 
+      console.log(res)
+      res.json()
+    })
+    .then(json => {
+      console.log(json)
+    })
+    .catch(err => {
+      console.log(err)
+    });
 
     // for now we'll use static state
-    this.setState({
-      satellites,
-      currentSatellite: 1
-    });
+    // fetch(`${this.state.origin}/backends`,{
+    //   credentials: 'include'
+    // })
+    // .then(res => {
+    //   console.log(res);
+    //   return res.json();
+    // })
+    // .then(json => {
+    //   if (json.status >= 401) {
+    //     return;
+    //   }
+
+    //   console.log(json)
+    //   // object with key backends, array value
+    //   this.setState({
+    //     satellites:  json.backends,
+    //     currentSatellite: json.backends[0] || null
+    //   });
+    // })
+    // .catch(err => {
+    //   // do something
+    // });
+    // this.setState({
+    //   satellites: [],
+    //   currentSatellite: null
+    // });
   }
 
-  handleUserId = (id) => {
-    this.setState({ userId: id });
+  componentDidUpdate(prevProps, prevState) {
+    console.log('yes')
+    if (prevState.isLoggedIn != this.state.isLoggedIn) {
+      console.log('in')
+      axios.get(
+        `${this.state.origin}/backends`, {
+          withCredentials: true
+        }
+      )
+      .then(res => { 
+        console.log(res)
+        res.json()
+      })
+      .then(json => {
+        console.log(json)
+      })
+      .catch(err => {
+        console.log(err)
+      });
+      // fetch(`${this.state.origin}/backends`, {
+      //   credentials: "include"
+      // })
+      // .then(res => {
+      //   console.log(res);
+      //   return res.json();
+      // })
+      // .then(json => {
+      //   if (json.status >= 401) {
+      //     return;
+      //   }
+
+      //   console.log(json)
+      //   // object with key backends, array value
+      //   this.setState({
+      //     satellites:  json.backends,
+      //     currentSatellite: json.backends[0] || null
+      //   });
+      // })
+      // .catch(err => {
+      //   // do something
+      // });   
+    }
+  }
+
+  handleisLoggedIn = (id) => {
+    this.setState({ isLoggedIn: id });
   };
 
   handleSelectedSatelliteChange = (id) => {
@@ -83,9 +171,24 @@ class App extends React.Component {
   };
 
   handleLogout = () => {
-    this.setState({
-      userId: null
+    fetch(`${this.state.origin}/logout`, {
+      method: 'POST'
+    })
+    .then(res => {
+      this.setState({ isLoggedIn: false });
+    })
+    .catch(err => {
+      this.setState({ isLoggedIn: false });
+      // come back to this later
     });
+  };
+
+  handleLogin = () => {
+    this.setState({ isLoggedIn: true });
+  };
+
+  handleSignup = () => {
+    this.setState({ isLoggedIn: true });
   };
 
   handleNewSatellite = (name) => {
@@ -198,7 +301,44 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        { this.state.userId ? (
+        <Router>
+          <Switch>
+            <PublicRoute 
+              component={Authentication}
+              path="/login"
+              onLogin={this.handleLogin}
+              origin={this.state.origin}
+              isLoggedIn={this.state.isLoggedIn}
+            />
+            <PublicRoute 
+              component={Authentication}
+              path="/register"
+              onSignup={this.handleSignup}
+              origin={this.state.origin}
+              isLoggedIn={this.state.isLoggedIn}
+            />
+            <ProtectedRoute 
+              component={Dashboard}
+              path="/"
+              isLoggedIn={this.state.isLoggedIn}
+              satellites={this.state.satellites}
+              currentSatellite={this.state.currentSatellite}
+              changeSatellite={this.handleSelectedSatelliteChange}
+              handleNewSatellite={this.handleNewSatellite}
+              handleLogout={this.handleLogout}
+              handleClearDone={this.handleClearDone}
+              loading={this.state.loading}
+              done={this.state.done}
+              satellite={satellite}
+              handleDestroySatellite={this.handleDestroySatellite}
+              loadingDestroy={this.state.loadingDestroy}
+              doneDestroy={this.state.doneDestroy}
+              clearDone={this.handleClearDoneDestroy}
+            />
+          </Switch>
+        </Router>
+
+        {/* { this.state.isLoggedIn ? (
           <Router>
             <Header 
               satellites={this.state.satellites}
@@ -228,9 +368,10 @@ class App extends React.Component {
           </Router>
         ) : (
           <Authentication 
-            handleUserId={this.handleUserId}
+            handleisLoggedIn={this.handleisLoggedIn}
+            origin={this.state.origin}
           />
-        )}    
+        )}               */}
       </div>
     );
   }

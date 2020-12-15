@@ -79,7 +79,6 @@ class SchemaManager extends React.Component {
       body: this.state.schema
     })
     .then(res => {
-      console.log(res);
       return res.json();
     })
     .then(json => {
