@@ -31,18 +31,14 @@ const Dashboard = ({
         done={done}
       />
       <div className="columns is-fullheight is-gapless">
-        <div className="column is-one-fifth nav-container">
-          <Navbar />
-        </div>          
-        <div className="column is-four-fifths">
-          <Main 
-            satellite={satellite}
-            handleDestroySatellite={handleDestroySatellite}
-            loading={loadingDestroy}
-            done={doneDestroy}
-            clearDone={clearDone}
-          />
-        </div>          
+        <Navbar />         
+        <Main 
+          satellite={satellite}
+          handleDestroySatellite={handleDestroySatellite}
+          loading={loadingDestroy}
+          done={doneDestroy}
+          clearDone={clearDone}
+        />        
       </div>
     </>
   );

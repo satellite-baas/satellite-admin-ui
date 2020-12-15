@@ -115,9 +115,7 @@ class SchemaManager extends React.Component {
 
   render() {
     return (
-      <div 
-        style={{ textAlign: 'left' }}
-      >
+      <div style={{ textAlign: 'left' }}>
         <h1 className="title is-2">Schema</h1>
         {this.state.notification &&         
           <div className={`mb-3 notification is-${this.state.notification.type}`}>

@@ -1,36 +1,19 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter as Router, Switch
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-import Navbar from "./Navbar";
-import Header from './Header';
-import Main from './Main';
-import Authentication from './Authentication';
-import PublicRoute from './PublicRoute';
-import ProtectedRoute from './ProtectedRoute';
-import Dashboard from './Dashboard';
+import Authentication from './auth/Authentication';
+import PublicRoute from './routes/PublicRoute';
+import ProtectedRoute from './routes/ProtectedRoute';
+import Dashboard from './layout/Dashboard';
 
-import './App.css';
+import './css/App.css';
 import 'bulma/css/bulma.css';
 
 // state for schema, and api keys
 
-const keys = [{
-  code: uuidv4(),
-  admin: true
-}, {
-  code: uuidv4(),
-  admin: false
-}, {
-  code: uuidv4(),
-  admin: true
-}];
-
-const schema = "";
 const satellites = [{
   id: 1,
   name: 'Todo App',
@@ -68,11 +51,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // make fetch call to controller to get all satellites for
-    // current user with id
-
-    // set current satellite to the first
-    // set satellites to the returned array
     axios.get(
       `${this.state.origin}/backends`, {
         withCredentials: true
@@ -220,21 +198,6 @@ class App extends React.Component {
       }, 2000);
   };
 
-  handleNewAPIKey = () => {
-    // for current satellite
-    // generate new API Key
-
-    const updatedSatellites = this.state.satellites.map(function(sat) {
-      if (sat.id === this.state.currentSatellite) {
-        return Object.assign({}, sat, { apiKey: uuidv4() });
-      }
-
-      return sat;
-    }, this);
-
-    this.setState({ satellites: updatedSatellites });
-  };
-
   handleDestroySatellite = () => {
     // fetch POST to controller to tear down satellite
 
@@ -294,10 +257,14 @@ class App extends React.Component {
     this.setState({ doneDestroy: null });
   };
 
-  render() { 
-    const satellite = this.state.satellites.filter(function(sat) {
+  getCurrentSatellite = () => {
+    return this.state.satellites.filter(function(sat) {
       return sat.id === this.state.currentSatellite;
     }, this)[0];
+  };
+
+  render() { 
+    const satellite = this.getCurrentSatellite();
 
     return (
       <div className="App">
@@ -337,41 +304,6 @@ class App extends React.Component {
             />
           </Switch>
         </Router>
-
-        {/* { this.state.isLoggedIn ? (
-          <Router>
-            <Header 
-              satellites={this.state.satellites}
-              currentSatellite={this.state.currentSatellite}
-              changeSatellite={this.handleSelectedSatelliteChange}
-              handleNewSatellite={this.handleNewSatellite}
-              handleLogout={this.handleLogout}
-              handleClearDone={this.handleClearDone}
-              loading={this.state.loading}
-              done={this.state.done}
-            />
-            <div className="columns is-fullheight is-gapless">
-              <div className="column is-one-fifth nav-container">
-                <Navbar />
-              </div>          
-              <div className="column is-four-fifths">
-                <Main 
-                  satellite={satellite}
-                  handleDestroySatellite={this.handleDestroySatellite}
-                  handleNewAPIKey={this.handleNewAPIKey}
-                  loading={this.state.loadingDestroy}
-                  done={this.state.doneDestroy}
-                  clearDone={this.handleClearDoneDestroy}
-                />
-              </div>          
-            </div>
-          </Router>
-        ) : (
-          <Authentication 
-            handleisLoggedIn={this.handleisLoggedIn}
-            origin={this.state.origin}
-          />
-        )}               */}
       </div>
     );
   }

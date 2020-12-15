@@ -17,7 +17,7 @@ const Authentication = ({ handleUserId, origin, onLogin, onSignup }) => {
     setMessage(message);
     setSuccess(success);
   };
-  console.log(origin)
+
   return (
     <div className="columns is-centered">
       <div className="column is-one-third vertical-center">

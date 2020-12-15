@@ -5,7 +5,8 @@ import Notification from './Notification';
 const Login = ({ 
   onLogin,  
   handleUpdateMessage, 
-  origin }) => {
+  origin 
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,7 +24,6 @@ const Login = ({
       password
     };
 
-    // console.log(origin)
     fetch(`${origin}/login`, {
       method: 'POST',
       headers: {
