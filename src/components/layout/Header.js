@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const Header = ({ 
-  satellites, 
-  currentSatellite, 
+const Header = ({
+  satellites,
+  currentSatellite,
   changeSatellite,
   handleLogout,
   handleNewSatellite,
   handleClearDone,
   loading,
   done,
-  origin
+  origin,
 }) => {
   const [selectedSatellite, setSelectedSatellite] = useState(currentSatellite);
-  const [newName, setNewName] = useState('');
+  const [newName, setNewName] = useState("");
   const [show, setShow] = useState(false);
   const [nameError, setNameError] = useState(false);
 
@@ -30,14 +30,15 @@ const Header = ({
   };
 
   const handleCloseModal = () => {
-    setNewName('');
+    setNewName("");
     setShow(false);
     clearDone();
   };
 
-  const handleHeaderNewSatellite = () => {
+  const handleHeaderNewSatellite = (e) => {
+    e.preventDefault();
     handleNewSatellite(newName);
-    setNewName('');
+    setNewName("");
   };
 
   const handleHeaderLogout = () => {
@@ -61,7 +62,10 @@ const Header = ({
     }
 
     for (let i = 0; i < satellites.length; i += 1) {
-      if (satellites[i].name.toLowerCase().replace(/ /g, '') === value.toLowerCase().replace(/ /g, '')) {
+      if (
+        satellites[i].name.toLowerCase().replace(/ /g, "") ===
+        value.toLowerCase().replace(/ /g, "")
+      ) {
         setNameError(true);
         return;
       }
@@ -75,17 +79,15 @@ const Header = ({
       <div className={`modal ${show ? "is-active" : ""}`}>
         <div className="modal-background">
           <div id="centered-modal" className="modal-card">
-            <header className="modal-card-head">
-              New Satellite
-            </header>
+            <header className="modal-card-head">New Satellite</header>
             <section className="modal-card-body">
               {!loading && !done && (
                 <div className="field">
                   <label className="label has-text-left">Name</label>
                   <div className="control has-icons-left">
-                    <input 
+                    <input
                       type="text"
-                      className={`input ${nameError ? 'is-danger' : ''}`}
+                      className={`input ${nameError ? "is-danger" : ""}`}
                       onChange={handleNameChange}
                       value={newName}
                     />
@@ -111,19 +113,25 @@ const Header = ({
             </section>
             {loading || done ? (
               <footer className="modal-card-foot"></footer>
-              ) : (
+            ) : (
               <footer className="modal-card-foot">
-                <button 
-                  className="button is-info" 
+                <button
+                  className="button is-info"
                   onClick={handleHeaderNewSatellite}
                   disabled={nameError}
-                >Create Satellite</button>
-                <button className="button" onClick={handleCloseModal}>Cancel</button>
+                >
+                  Create Satellite
+                </button>
+                <button className="button" onClick={handleCloseModal}>
+                  Cancel
+                </button>
               </footer>
             )}
           </div>
           <button
-            className={`modal-close is-large ${!loading ? 'is-active' : 'is-hidden'}`}
+            className={`modal-close is-large ${
+              !loading ? "is-active" : "is-hidden"
+            }`}
             onClick={handleCloseModal}
           ></button>
         </div>
@@ -134,53 +142,35 @@ const Header = ({
             <p className="subtitle is-3">Satellite</p>
           </div>
           <div className="level-item">
-              {
-                satellites.length === 0 ? (
-                  null
-                ) : (
-                  <div className="select">
-                    <select
-                      value={selectedSatellite}
-                      onChange={handleSelectChange}
-                    >
-                    {satellites.map(function(satellite, idx) {
-                        return (
-                          <option
-                            key={idx}
-                            value={satellite.id}
-                          >
-                            {satellite.name}
-                          </option>
-                        );
-                      })
-                      }
-                    </select>
-                  </div>
-                )
-              }
+            {satellites.length === 0 ? null : (
+              <div className="select">
+                <select value={selectedSatellite} onChange={handleSelectChange}>
+                  {satellites.map(function (satellite, idx) {
+                    return (
+                      <option key={idx} value={satellite.id}>
+                        {satellite.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            )}
           </div>
           <div className="level-item">
-            <button
-              className="button is-primary"
-              onClick={handleOpenModal}
-            >
+            <button className="button is-primary" onClick={handleOpenModal}>
               Launch New Satellite
             </button>
-          </div>      
+          </div>
         </div>
         <div className="level-right">
           <div className="level-item">
-            <button
-              className="button"
-              onClick={handleHeaderLogout}
-            >
+            <button className="button" onClick={handleHeaderLogout}>
               Logout
             </button>
           </div>
         </div>
       </nav>
     </div>
-
   );
 };
 

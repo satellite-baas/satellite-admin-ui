@@ -1,9 +1,9 @@
-import axios from 'axios';
-import React from 'react';
-import FileForm from './FileForm';
+import axios from "axios";
+import React from "react";
+import FileForm from "./FileForm";
 
 const condenseName = (name) => {
-  return name.split(' ').join('_').toLowerCase();
+  return name.split(" ").join("_").toLowerCase();
 };
 
 class StaticManager extends React.Component {
@@ -16,47 +16,68 @@ class StaticManager extends React.Component {
       loading: false,
       done: false,
       files: [],
-      selectedFile: null
+      selectedFile: null,
     };
   }
 
   componentDidMount() {
     if (this.props.satellite) {
-      axios.get(`${this.props.origin}/files/${this.props.satellite.id}`)
-      .then(res => { 
-        console.log(res);
-        return res.json();
-      })
-      .then(json => {
-        console.log(json);
-        this.setState({
-          files: json
+      axios
+        .get(`${this.props.origin}/files/${this.props.satellite.id}`)
+        .then((json) => {
+          console.log(json);
+          this.setState({
+            files: json.data,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            done: {
+              type: "danger",
+              msg: "Could not fetch files. Contact an administrator.",
+            },
+          });
         });
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({
-          done: {
-            type: 'danger',
-            msg: 'Could not fetch files. Contact an administrator.'
-          }
-        });
-      });
 
       return;
     }
 
     this.setState({
       done: {
-        type: 'danger',
-        msg: 'No files to fetch for non-existent backend.'
-      }
+        type: "danger",
+        msg: "No files to fetch for non-existent backend.",
+      },
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.satellite || !this.props.satellite) return;
+
+    if (prevProps.satellite.id !== this.props.satellite.id) {
+      axios
+        .get(`${this.props.origin}/files/${this.props.satellite.id}`)
+        .then((json) => {
+          console.log(json);
+          this.setState({
+            files: json.data,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            done: {
+              type: "danger",
+              msg: "Could not fetch files. Contact an administrator.",
+            },
+          });
+        });
+    }
   }
 
   handleOpenModal = (name) => {
     this.setState({
-      selectedFile: name
+      selectedFile: name,
     });
   };
 
@@ -65,72 +86,75 @@ class StaticManager extends React.Component {
 
     if (size < 1000) {
       return `< 1KB`;
-    } else if (size > 1000000000) { 
-      updatedSize = Math.round(size / 1000000000 * 10) / 10;
-      return `${updatedSize}GB`
+    } else if (size > 1000000000) {
+      updatedSize = Math.round((size / 1000000000) * 10) / 10;
+      return `${updatedSize}GB`;
     } else if (size > 1000000) {
-      updatedSize = Math.round(size / 1000000 * 10) / 10;
+      updatedSize = Math.round((size / 1000000) * 10) / 10;
       return `${updatedSize}MB`;
     } else {
-      return `${Math.round(size / 1000 * 10) / 10}KB`;
+      return `${Math.round((size / 1000) * 10) / 10}KB`;
     }
   };
 
   handleUploadClick = () => {
     this.setState({
-      showUpload: true
+      showUpload: true,
     });
   };
 
   handleUpload = (file) => {
     const context = this;
     const data = new FormData();
-    const fileInput = document.querySelector('#file_upload');
+    const fileInput = document.querySelector("#file_upload");
 
-    data.append('file', fileInput.files[0]);
-    data.append('id', this.props.currentSatellite);
-    
-    axios.post(`${this.props.origin}/upload`, {
-      withCredentials: true,
-      data,
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    .then(res => {
-      console.log(res);
+    data.append("file", fileInput.files[0]);
+    data.append("id", this.props.satellite.id);
 
-      const newFile = {
-        name: file.name,
-        modified: new Date(),
-        size: file.size
-      };
+    axios
+      .post(`${this.props.origin}/upload`, data, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
+        console.log(res);
 
-      console.log(newFile)
+        const newFile = {
+          name: file.name,
+          modified: new Date(),
+          size: file.size,
+        };
 
-      this.setState({
-        files: context.state.files.concat(newFile)
-      }, () => {
-        context.setState({
+        console.log(newFile);
+
+        this.setState(
+          {
+            files: context.state.files.concat(newFile),
+          },
+          () => {
+            context.setState({
+              loading: false,
+              showUpload: false,
+              done: {
+                type: "success",
+                msg: "File uploaded successfully.",
+              },
+            });
+          }
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+
+        this.setState({
           loading: false,
           showUpload: false,
           done: {
-            type: 'success',
-            msg: 'File uploaded successfully.'
-          }
+            type: "danger",
+            msg: "Could not upload file. Make sure it is under 1GB.",
+          },
         });
       });
-    })
-    .catch(err => {
-      console.log(err);
-
-      this.setState({
-        loading: false,
-        showUpload: false,
-        done: {
-          type: 'danger',
-          msg: 'Could not upload file. Make sure it is under 1GB.'
-        }
-      });
-    });
 
     // fetch(`http://localhost:3030/upload`, {
     //   method: 'POST',
@@ -170,13 +194,13 @@ class StaticManager extends React.Component {
 
   handleUploadDone = () => {
     this.setState({
-      showUpload: false
+      showUpload: false,
     });
   };
 
   closeNotification = () => {
     this.setState({
-      done: null
+      done: null,
     });
   };
 
@@ -191,37 +215,43 @@ class StaticManager extends React.Component {
   handleConfirmDelete = () => {
     const context = this;
 
-    axios.delete(`${this.state.origin}/file`, {
-      data: { fileName: this.state.selectedFile }
-    })
-    .then(res => {
-      console.log(res);
+    axios
+      .delete(`${this.state.origin}/file`, {
+        data: { fileName: this.state.selectedFile },
+      })
+      .then((res) => {
+        console.log(res);
 
-      this.setState({
-        files: context.state.files.filter(file => file.name !== context.state.selectedFile)
-      }, () => {
-        context.setState({
+        this.setState(
+          {
+            files: context.state.files.filter(
+              (file) => file.name !== context.state.selectedFile
+            ),
+          },
+          () => {
+            context.setState({
+              done: {
+                type: "success",
+                msg: "File successfully deleted.",
+              },
+              show: false,
+              selectedFile: null,
+            });
+          }
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+
+        this.setState({
           done: {
-            type: 'success',
-            msg: 'File successfully deleted.'
+            type: "danger",
+            msg: "Could not delete the selected file.",
           },
           show: false,
-          selectedFile: null
+          selectedFile: null,
         });
       });
-    })
-    .catch(err => {
-      console.log(err);
-
-      this.setState({
-        done: {
-          type: 'danger',
-          msg: 'Could not delete the selected file.'
-        },
-        show: false,
-        selectedFile: null
-      });
-    });
 
     // fetch(`http://localhost:3030/file`, {
     //   method: 'DELETE',
@@ -256,17 +286,15 @@ class StaticManager extends React.Component {
     // });
   };
 
-  render() { 
+  render() {
     return (
       <div className="columns is-centered">
         <div className={`modal ${this.state.showUpload ? "is-active" : ""}`}>
           <div className="modal-background">
             <div id="centered-modal" className="modal-card">
-              <header className="modal-card-head">
-                File Upload
-              </header>
+              <header className="modal-card-head">File Upload</header>
               <section className="modal-card-body">
-                <FileForm 
+                <FileForm
                   handleUpload={this.handleUpload}
                   loading={this.state.loading}
                 />
@@ -281,19 +309,22 @@ class StaticManager extends React.Component {
         <div className={`modal ${this.state.show ? "is-active" : ""}`}>
           <div className="modal-background">
             <div id="centered-modal" className="modal-card">
-              <header className="modal-card-head">
-                Delete File
-              </header>
+              <header className="modal-card-head">Delete File</header>
               <section className="modal-card-body">
-                <p className="subtitle">Are you sure you want to delete this file? This action is irreversible.</p>
+                <p className="subtitle">
+                  Are you sure you want to delete this file? This action is
+                  irreversible.
+                </p>
               </section>
               <footer className="modal-card-foot">
-                <button 
-                  className="button is-danger" 
+                <button
+                  className="button is-danger"
                   onClick={this.handleConfirmDelete}
-                >Delete File</button>
-                <button 
-                  className="button" 
+                >
+                  Delete File
+                </button>
+                <button
+                  className="button"
                   onClick={this.handleCloseDeleteModal}
                 >
                   Cancel
@@ -317,7 +348,10 @@ class StaticManager extends React.Component {
             </button>
             {this.state.done && (
               <div className={`mt-3 notification is-${this.state.done.type}`}>
-                <button className="delete" onClick={this.closeNotification}></button>
+                <button
+                  className="delete"
+                  onClick={this.closeNotification}
+                ></button>
                 {this.state.done.msg}
               </div>
             )}
@@ -333,27 +367,23 @@ class StaticManager extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {
-                  this.state.files.map(function(file) {
-                    return (
-                      <tr>
-                        <td>{file.name}</td>
-                        <td>{this.getSize(file.size)}</td>
-                        <td>{new Date(file.modified).toDateString()}</td>
-                        <td>
-                          <span 
-                            className="icon delete-backend ml-2"
-                            onClick={() => this.handleOpenDeleteModal(file.name)}
-                          >
-                            <i 
-                              className="fas fa-trash-alt"
-                            ></i>
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  }, this)
-                }
+                {this.state.files.map(function (file) {
+                  return (
+                    <tr>
+                      <td>{file.name}</td>
+                      <td>{this.getSize(file.size)}</td>
+                      <td>{new Date(file.modified).toDateString()}</td>
+                      <td>
+                        <span
+                          className="icon delete-backend ml-2"
+                          onClick={() => this.handleOpenDeleteModal(file.name)}
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                }, this)}
               </tbody>
             </table>
           </div>
@@ -361,6 +391,6 @@ class StaticManager extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default StaticManager;

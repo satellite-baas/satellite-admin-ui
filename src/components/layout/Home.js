@@ -1,9 +1,9 @@
-import axios from 'axios';
-import React from 'react';
+import axios from "axios";
+import React from "react";
 
 const iconSpanStyle = {
-  height: '1em',
-  width: '1em'
+  height: "1em",
+  width: "1em",
 };
 
 class Home extends React.Component {
@@ -17,7 +17,7 @@ class Home extends React.Component {
       show: false,
       showAPI: false,
       apiVisible: false,
-      endpointVisible: false
+      endpointVisible: false,
     };
   }
 
@@ -30,7 +30,7 @@ class Home extends React.Component {
 
     const intervalID = setInterval(() => {
       this.healthCheck();
-    }, 10000);
+    }, 5000);
 
     this.setState({ intervalID });
   }
@@ -51,19 +51,20 @@ class Home extends React.Component {
       }
     `;
 
-    axios.get(`${this.props.origin}/health/${this.props.satellite.id}`, {
-      withCredentials: true
-    })
-    .then(res => {
-      context.setState({
-        healthy: true
+    axios
+      .get(`${this.props.origin}/health/${this.props.satellite.id}`, {
+        withCredentials: true,
       })
-    })
-    .catch(err => {
-      context.setState({
-        healthy: false
+      .then((res) => {
+        context.setState({
+          healthy: true,
+        });
+      })
+      .catch((err) => {
+        context.setState({
+          healthy: false,
+        });
       });
-    });
 
     // fetch(`http://${this.props.satellite.name}.${DOMAIN}:5000/admin`, {
     //   method: 'POST',
@@ -117,15 +118,15 @@ class Home extends React.Component {
   };
 
   handleShowField = (field) => {
-    if (field === 'static') {
+    if (field === "static") {
       this.setState({ staticVisible: !this.state.staticVisible });
     }
 
-    if (field === 'api') {
+    if (field === "api") {
       this.setState({ apiVisible: !this.state.apiVisible });
     }
 
-    if (field === 'endpoint') {
+    if (field === "endpoint") {
       this.setState({ endpointVisible: !this.state.endpointVisible });
     }
 
@@ -133,14 +134,17 @@ class Home extends React.Component {
   };
 
   handleCopy = (copyValue) => {
-    navigator.clipboard.writeText(copyValue).then(() => {
-      return true;
-    }, () => {
-      return null;
-    });
+    navigator.clipboard.writeText(copyValue).then(
+      () => {
+        return true;
+      },
+      () => {
+        return null;
+      }
+    );
   };
 
-  render() { 
+  render() {
     const { satellite, loading, done } = this.props;
 
     return (
@@ -148,23 +152,23 @@ class Home extends React.Component {
         <div className={`modal ${this.state.show ? "is-active" : ""}`}>
           <div className="modal-background">
             <div id="centered-modal" className="modal-card">
-              <header className="modal-card-head">
-                Destroy Satellite
-              </header>
+              <header className="modal-card-head">Destroy Satellite</header>
               {!loading && !done && (
                 <>
                   <section className="modal-card-body">
-                    <p className="subtitle">Are you sure you want to destroy this Satellite? This action is irreversible.</p>
+                    <p className="subtitle">
+                      Are you sure you want to destroy this Satellite? This
+                      action is irreversible.
+                    </p>
                   </section>
                   <footer className="modal-card-foot">
-                    <button 
-                      className="button is-danger" 
+                    <button
+                      className="button is-danger"
                       onClick={this.handleConfirmDestroy}
-                    >Destroy Satellite</button>
-                    <button 
-                      className="button" 
-                      onClick={this.handleCloseModal}
                     >
+                      Destroy Satellite
+                    </button>
+                    <button className="button" onClick={this.handleCloseModal}>
                       Cancel
                     </button>
                   </footer>
@@ -173,9 +177,7 @@ class Home extends React.Component {
               {loading && (
                 <>
                   <section className="modal-card-body">
-                    <progress
-                      className="progress is-medium is-danger"
-                    >
+                    <progress className="progress is-medium is-danger">
                       15%
                     </progress>
                   </section>
@@ -185,9 +187,7 @@ class Home extends React.Component {
               {done && (
                 <>
                   <section className="modal-card-body">
-                    <p className="subtitle">
-                      {done.msg}
-                    </p>
+                    <p className="subtitle">{done.msg}</p>
                   </section>
                   <footer className="modal-card-foot"></footer>
                 </>
@@ -201,41 +201,56 @@ class Home extends React.Component {
             )}
           </div>
         </div>
-        { satellite ? (
+        {satellite ? (
           <>
             <div className="columns is-centered is-multiline">
-              
               <div className="column is-three-quarters">
                 <h1 className="title is-2 has-text-left">
                   {satellite.name}
-                  <span 
-                    className={`tag ${this.state.healthy ? 'is-success' : 'is-danger'} ml-4 health-tag is-medium`}
+                  <span
+                    className={`tag ${
+                      this.state.healthy ? "is-success" : "is-danger"
+                    } ml-4 health-tag is-medium`}
                   >
-                    {this.state.healthy ? 'Healthy' : 'Down'}
+                    {this.state.healthy ? "Healthy" : "Down"}
                   </span>
                 </h1>
                 <div className="box has-text-left">
                   <div className="control has-icons-right">
-                    <h1 
+                    <h1
                       className="title is-4"
-                      onClick={() => this.handleShowField('endpoint')}
+                      onClick={() => this.handleShowField("endpoint")}
                     >
                       Endpoint
                       <span
                         style={iconSpanStyle}
-                        className={`icon is-right ${this.state.endpointVisible ? 'is-active' : 'is-hidden'}`}
+                        className={`icon is-right ${
+                          this.state.endpointVisible ? "is-active" : "is-hidden"
+                        }`}
                       >
-                        <i className={`fas fa-angle-double-up dropdown-icon`}></i>
+                        <i
+                          className={`fas fa-angle-double-up dropdown-icon`}
+                        ></i>
                       </span>
                       <span
                         style={iconSpanStyle}
-                        className={`icon is-right ${!this.state.endpointVisible ? 'is-active' : 'is-hidden'}`}
+                        className={`icon is-right ${
+                          !this.state.endpointVisible
+                            ? "is-active"
+                            : "is-hidden"
+                        }`}
                       >
-                        <i className={`fas fa-angle-double-down dropdown-icon`}></i>
+                        <i
+                          className={`fas fa-angle-double-down dropdown-icon`}
+                        ></i>
                       </span>
                     </h1>
                   </div>
-                  <div className={this.state.endpointVisible ? 'is-active' : 'is-hidden'}>
+                  <div
+                    className={
+                      this.state.endpointVisible ? "is-active" : "is-hidden"
+                    }
+                  >
                     <p className="subtitle is-5 mt-4">
                       {satellite.name}
                       <span className="icon is-small ml-3">
@@ -243,49 +258,61 @@ class Home extends React.Component {
                       </span>
                     </p>
                   </div>
-
                 </div>
                 <div className="box has-text-left">
                   <div className="control has-icons-right">
-                    <h1 
-                      className="title is-4" 
-                      onClick={() => this.handleShowField('api')}
-                    >API Key
+                    <h1
+                      className="title is-4"
+                      onClick={() => this.handleShowField("api")}
+                    >
+                      API Key
                       <span
                         style={iconSpanStyle}
-                        className={`icon is-right ${this.state.apiVisible ? 'is-active' : 'is-hidden'}`}
+                        className={`icon is-right ${
+                          this.state.apiVisible ? "is-active" : "is-hidden"
+                        }`}
                       >
-                        <i className={`fas fa-angle-double-up dropdown-icon`}></i>
+                        <i
+                          className={`fas fa-angle-double-up dropdown-icon`}
+                        ></i>
                       </span>
                       <span
                         style={iconSpanStyle}
-                        className={`icon is-right ${!this.state.apiVisible ? 'is-active' : 'is-hidden'}`}
+                        className={`icon is-right ${
+                          !this.state.apiVisible ? "is-active" : "is-hidden"
+                        }`}
                       >
-                        <i className={`fas fa-angle-double-down dropdown-icon`}></i>
+                        <i
+                          className={`fas fa-angle-double-down dropdown-icon`}
+                        ></i>
                       </span>
                     </h1>
                   </div>
-                  <div className={this.state.apiVisible ? 'is-active' : 'is-hidden'}>
+                  <div
+                    className={
+                      this.state.apiVisible ? "is-active" : "is-hidden"
+                    }
+                  >
                     <p className="subtitle mt-4">
                       {satellite.apiKey}
-                      <span 
+                      <span
                         className="icon is-small ml-3"
                         onClick={() => this.handleCopy(satellite.apiKey)}
                       >
-                          <i className="far fa-copy clicky"></i>
+                        <i className="far fa-copy clicky"></i>
                       </span>
-                      <span 
+                      <span
                         className="icon is-small ml-3"
                         onClick={this.handleOpenAPIModal}
                       >
-                          <i className="fas fa-redo clicky"></i>
-                      </span>                
+                        <i className="fas fa-redo clicky"></i>
+                      </span>
                     </p>
                   </div>
                 </div>
                 <div className="box has-text-left">
                   <div className="buttons is-centered">
-                    <button 
+                    <button
                       className="button is-danger is-medium is-light is-fullwidth"
                       onClick={this.handleOpenModal}
                     >
@@ -307,10 +334,9 @@ class Home extends React.Component {
             </div>
           </div>
         )}
-
       </>
     );
   }
-};
+}
 
 export default Home;
