@@ -104,6 +104,10 @@ class StaticManager extends React.Component {
   };
 
   handleUpload = (file) => {
+    if (!this.props.satellite) {
+      return;
+    }
+    
     const context = this;
     const data = new FormData();
     const fileInput = document.querySelector("#file_upload");
