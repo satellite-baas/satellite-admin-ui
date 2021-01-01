@@ -19,8 +19,13 @@ const Authentication = ({ handleUserId, origin, onLogin, onSignup }) => {
   };
 
   return (
-    <div className="columns is-centered">
+    <div className="columns is-centered bkgrd">
       <div className="column is-one-third vertical-center">
+        <img 
+          src="/header-logo.png"
+          width="400"
+          style={{ marginBottom: "30px" }}
+        />
         <div className="box" style={{ textAlign: 'left'}}>
           <h1 className="title is-2">{
             isLoggedIn ? ('Login') : ('Register')
