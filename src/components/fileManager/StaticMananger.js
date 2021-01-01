@@ -98,6 +98,10 @@ class StaticManager extends React.Component {
   };
 
   handleUploadClick = () => {
+    if (!this.props.satellite) {
+      return;
+    }
+    
     this.setState({
       showUpload: true,
     });

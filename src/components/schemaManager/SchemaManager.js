@@ -142,43 +142,6 @@ class SchemaManager extends React.Component {
           });
       }
     );
-
-    // fetch(`http://localhost:3030/admin/schema`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/x-binary'
-    //   },
-    //   body: this.state.schema
-    // })
-    // .then(res => {
-    //   return res.json();
-    // })
-    // .then(json => {
-    //   if (json.errors) {
-    //     this.setState({
-    //       notification: {
-    //         type: 'danger',
-    //         msg: 'There is an issue with the schema. Could not update.'
-    //       }
-    //     });
-
-    //     return;
-    //   }
-
-    //   this.setState({ notification: {
-    //     type: 'success',
-    //     msg: 'Schema successfully updated.'
-    //   }});
-    // })
-    // .catch(err => {
-    //   this.handleUpdateSchema('# Could not update schema.');
-    //   context.setState({
-    //     notification: {
-    //       type: 'danger',
-    //       msg: 'Could not update schema due to connection error.'
-    //     }
-    //   });
-    // });
   };
 
   handleCloseDelete = () => {

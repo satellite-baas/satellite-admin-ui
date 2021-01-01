@@ -12,27 +12,6 @@ import Dashboard from "./components/layout/Dashboard";
 import "./css/App.css";
 import "bulma/css/bulma.css";
 
-// state for schema, and api keys
-
-// const satellites = [{
-//   id: 1,
-//   name: 'Todo App',
-//   domain: 'todoapp',
-//   endpoint: 'todoapp.localhost.com',
-//   apiKey: uuidv4(),
-//   files: true
-// }, {
-//   id: 2,
-//   name: 'Shopping Cart',
-//   domain: 'shoppingcart',
-//   endpoint: 'shoppingcart.localhost.com',
-//   apiKey: uuidv4(),
-//   files: false
-// }];
-
-// schema is fetched on route load of schema
-// keys are fetched on route load of api
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +19,7 @@ class App extends React.Component {
     this.state = {
       currentSatellite: null,
       satellites: [],
-      isLoggedIn: false,
+      isLoggedIn: true,
       loading: false,
       done: null,
       loadingDestroy: false,
@@ -112,12 +91,12 @@ class App extends React.Component {
     fetch(`${this.state.origin}/logout`, {
       method: "POST",
     })
-      .then((res) => {
-        this.setState({ isLoggedIn: false });
-      })
-      .catch((err) => {
-        this.setState({ isLoggedIn: false });
-      });
+    .then((res) => {
+      this.setState({ isLoggedIn: false });
+    })
+    .catch((err) => {
+      this.setState({ isLoggedIn: false });
+    });
   };
 
   handleLogin = () => {

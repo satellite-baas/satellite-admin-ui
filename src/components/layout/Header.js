@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
 const Header = ({
   satellites,
@@ -139,7 +140,14 @@ const Header = ({
       <nav className="level extra-level-style">
         <div className="level-left">
           <div className="level-item">
-            <p className="subtitle is-3">Satellite</p>
+            <Link to="/">
+                <p className="subtitle is-3">
+                  <img 
+                    src="/header.png" 
+                    id="satellite-header"
+                  />
+                </p>            
+              </Link>
           </div>
           <div className="level-item">
             {satellites.length === 0 ? null : (
