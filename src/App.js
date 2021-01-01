@@ -19,7 +19,7 @@ class App extends React.Component {
     this.state = {
       currentSatellite: null,
       satellites: [],
-      isLoggedIn: true,
+      isLoggedIn: false,
       loading: false,
       done: null,
       loadingDestroy: false,
